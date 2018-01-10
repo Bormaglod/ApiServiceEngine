@@ -43,6 +43,9 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,19 +56,17 @@
   <ItemGroup>
     <Compile Include="Configuration\ApiConfigSection.cs" />
     <Compile Include="Configuration\Method.cs" />
-    <Compile Include="Configuration\MethodCollection.cs" />
+    <Compile Include="Configuration\Methods.cs" />
+    <Compile Include="Configuration\ParameterMethod.cs" />
+    <Compile Include="Configuration\Parameters.cs" />
     <Compile Include="Configuration\Parameter.cs" />
-    <Compile Include="Configuration\ParameterMap.cs" />
-    <Compile Include="Configuration\ParameterMapItem.cs" />
     <Compile Include="Configuration\Service.cs" />
-    <Compile Include="Configuration\ServicesCollection.cs" />
+    <Compile Include="Configuration\Services.cs" />
     <Compile Include="Configuration\Settings.cs" />
     <Compile Include="Configuration\Task.cs" />
     <Compile Include="Configuration\TaskMethod.cs" />
-    <Compile Include="Configuration\TaskMethodCollection.cs" />
-    <Compile Include="Configuration\TaskParameter.cs" />
-    <Compile Include="Configuration\TaskParameterCollection.cs" />
-    <Compile Include="Configuration\TasksCollection.cs" />
+    <Compile Include="Configuration\TaskMethods.cs" />
+    <Compile Include="Configuration\Tasks.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="ParameterList.cs" />
     <Compile Include="ParameterValue.cs" />
@@ -73,11 +74,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RosneftAPI.cs" />
     <Compile Include="ServiceAPI.cs" />
+    <Compile Include="SingleHttpClientInstanceController.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>

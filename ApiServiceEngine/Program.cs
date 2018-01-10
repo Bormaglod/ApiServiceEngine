@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Configuration;
-    using System.Collections.Specialized;
     using System.Linq;
     using System.Reflection;
     using System.Net;
@@ -78,7 +77,7 @@
 
                     // проверим наличие обязательных параметров
                     StringBuilder builder = new StringBuilder();
-                    foreach (Parameter p in m.OfType<Parameter>().Where(x => x.Required && x.In))
+                    foreach (ParameterMethod p in m.OfType<ParameterMethod>().Where(x => x.Required && x.In))
                     {
                         ParameterValue pv = parameters.Get(m.Name, p.Name);
                         if (pv == null)
@@ -89,7 +88,8 @@
                     {
                         string paramNeeded = builder.Remove(builder.Length - 1, 1).ToString();
 
-                        LogHelper.Logger.Error($"Для метода {m.Name} обязательно использование параметров {paramNeeded}. Метод не будет выполнен.");
+                        LogHelper.Logger.Error($"Для метода {m.Name} обязательно использование параметров [{paramNeeded}]. Метод не будет выполнен.");
+                        continue;
                     }
 
                     LogHelper.Logger.Info($"Выполнение метода {m.Name}.");
@@ -152,7 +152,7 @@
         static ParameterList LoadParameters(string[] args)
         {
             ParameterList parameters = new ParameterList();
-            foreach (ParameterMapItem item in config.Parameters)
+            foreach (Parameter item in config.Parameters)
             {
                 parameters.Add(item);
             }

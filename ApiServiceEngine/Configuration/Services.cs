@@ -2,8 +2,8 @@
 {
     using System.Configuration;
 
-    [ConfigurationCollection(typeof(ServicesCollection), AddItemName = "service", CollectionType = ConfigurationElementCollectionType.BasicMap)]
-    class ServicesCollection : ConfigurationElementCollection
+    [ConfigurationCollection(typeof(Services), AddItemName = "service", CollectionType = ConfigurationElementCollectionType.BasicMap)]
+    class Services : ConfigurationElementCollection
     {
         public Service Get(string name)
         {

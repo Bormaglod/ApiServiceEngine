@@ -2,8 +2,8 @@
 {
     using System.Configuration;
 
-    [ConfigurationCollection(typeof(MethodCollection), AddItemName = "method", CollectionType = ConfigurationElementCollectionType.BasicMap)]
-    class MethodCollection : ConfigurationElementCollection
+    [ConfigurationCollection(typeof(Methods), AddItemName = "method", CollectionType = ConfigurationElementCollectionType.BasicMap)]
+    class Methods : ConfigurationElementCollection
     {
         public Method Get(string name)
         {

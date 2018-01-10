@@ -3,7 +3,7 @@
     using System.Configuration;
 
     [ConfigurationCollection(typeof(TaskMethod), CollectionType = ConfigurationElementCollectionType.AddRemoveClearMap)]
-    class TaskMethodCollection : ConfigurationElementCollection
+    class TaskMethods : ConfigurationElementCollection
     {
         protected override ConfigurationElement CreateNewElement()
         {

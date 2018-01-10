@@ -17,7 +17,7 @@
         public Settings Settings => (Settings)this["settings"];
 
         [ConfigurationProperty("methods")]
-        public MethodCollection Methods => (MethodCollection)this["methods"];
+        public Methods Methods => (Methods)this["methods"];
 
         public override string ToString()
         {

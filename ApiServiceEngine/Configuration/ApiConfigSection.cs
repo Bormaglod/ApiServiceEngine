@@ -7,13 +7,13 @@
         private Configuration config;
 
         [ConfigurationProperty("parameters")]
-        public ParameterMap Parameters => (ParameterMap)this["parameters"];
+        public Parameters Parameters => (Parameters)this["parameters"];
 
         [ConfigurationProperty("tasks")]
-        public TasksCollection Tasks => (TasksCollection)this["tasks"];
+        public Tasks Tasks => (Tasks)this["tasks"];
 
         [ConfigurationProperty("services")]
-        public ServicesCollection Services => (ServicesCollection)this["services"];
+        public Services Services => (Services)this["services"];
 
         ApiConfigSection()
         {

@@ -26,17 +26,19 @@
 
         protected override ConfigurationElement CreateNewElement()
         {
-            return new Parameter();
+            return new ParameterMethod();
         }
 
         protected override object GetElementKey(ConfigurationElement element)
         {
-            return ((Parameter)element).Name;
+            ParameterMethod pm = (ParameterMethod)element;
+            string key = (pm.In ? "in_" : "out_") + pm.Name;
+            return key;
         }
 
-        public Parameter Get(string name)
+        public ParameterMethod Get(string name)
         {
-            return (Parameter)BaseGet(name);
+            return (ParameterMethod)BaseGet(name);
         }
 
         public override string ToString()

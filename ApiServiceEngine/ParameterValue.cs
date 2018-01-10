@@ -4,11 +4,11 @@
 
     class ParameterValue
     {
-        ParameterMapItem parameter;
+        Parameter parameter;
         string value;
         bool isActive;
 
-        public ParameterValue(ParameterMapItem parameter)
+        public ParameterValue(Parameter parameter)
         {
             this.parameter = parameter;
             this.value = string.Empty;
@@ -28,6 +28,11 @@
         {
             value = parameterValue;
             isActive = true;
+        }
+
+        public override string ToString()
+        {
+            return $"{Name} = {Value}, {IsActive}";
         }
     }
 }

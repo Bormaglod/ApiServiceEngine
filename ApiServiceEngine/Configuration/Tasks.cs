@@ -2,8 +2,8 @@
 {
     using System.Configuration;
 
-    [ConfigurationCollection(typeof(TasksCollection), AddItemName = "task", CollectionType = ConfigurationElementCollectionType.BasicMap)]
-    class TasksCollection : ConfigurationElementCollection
+    [ConfigurationCollection(typeof(Tasks), AddItemName = "task", CollectionType = ConfigurationElementCollectionType.BasicMap)]
+    class Tasks : ConfigurationElementCollection
     {
         public Task Get(string name)
         {

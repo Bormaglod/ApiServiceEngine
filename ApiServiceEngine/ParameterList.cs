@@ -18,7 +18,7 @@
             return list.Where(x => x.IsActive);
         }
 
-        public ParameterValue Add(ParameterMapItem item)
+        public ParameterValue Add(Parameter item)
         {
             ParameterValue pv = new ParameterValue(item);
             list.Add(pv);
