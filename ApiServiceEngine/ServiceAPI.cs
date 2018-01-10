@@ -143,8 +143,10 @@
         {
             Method method = Config.Methods.Get(methodName);
 
-            FbCommand cmd = new FbCommand(method.Procedure, Connection, Transaction);
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            FbCommand cmd = new FbCommand(method.Procedure, Connection, Transaction)
+            {
+                CommandType = System.Data.CommandType.StoredProcedure
+            };
 
             foreach (ParameterMethod p in method.OfType<ParameterMethod>())
             {
