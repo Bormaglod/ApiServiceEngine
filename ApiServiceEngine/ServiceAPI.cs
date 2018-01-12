@@ -1,78 +1,76 @@
 ﻿namespace ApiServiceEngine
 {
     using System;
+    using System.Collections.Specialized;
     using System.Reflection;
     using System.Linq;
     using System.Net;
     using System.Text;
     using ApiServiceEngine.Configuration;
     using FirebirdSql.Data.FirebirdClient;
+    using Inflector;
 
     abstract class ServiceAPI
     {
-        Service config;
+        Service service;
         FbConnection connection;
         FbTransaction transaction;
 
         public ServiceAPI(Service config, FbConnection connection, FbTransaction transaction)
         {
-            this.config = config;
+            this.service = config;
             this.connection = connection;
             this.transaction = transaction;
         }
 
-        public string Password => config.Settings.Password;
+        public string Password => service.Settings.Password;
 
-        public string Name => config.Name;
+        public string Url => service.Settings.Url;
 
-        public string Comment => config.Comment;
+        public string Login => service.Settings.Login;
 
-        public string Address => config.Settings.Address;
+        public string Name => service.Name;
 
-        public string Login => config.Settings.Login;
+        public string Comment => service.Comment;
 
         protected FbConnection Connection => connection;
 
         protected FbTransaction Transaction => transaction;
 
-        protected Service Config => config;
+        protected Service Service => service;
 
-        public HttpStatusCode Execute(string methodName, ParameterList parameters)
+        public (object Info, HttpStatusCode Status) ExecuteMethod(string methodName, StringDictionary parameters)
         {
-            Type type = GetType();
-            MethodInfo method = type.GetMethod(methodName, new Type[] { typeof(HttpWebResponse), typeof(ParameterList) });
-            if (method != null)
-            {
-                string address = GetAddresWithParameters(methodName, parameters);
-                LogHelper.Logger.Info(address);
-
-                HttpWebResponse response = GetResonse(address);
-                if (response == null)
-                {
-                    return HttpStatusCode.BadRequest;
-                }
-
-                if (response.StatusCode != HttpStatusCode.OK)
-                {
-                    return response.StatusCode;
-                }
-
-                return (HttpStatusCode)method.Invoke(this, new object[] { response, parameters });
-            }
-
-            method = type.GetMethod(methodName, new Type[] { typeof(ParameterList) });
-            if (method != null)
-            {
-                return (HttpStatusCode)method.Invoke(this, new object[] { parameters });
-            }
-            
-            LogHelper.Logger.Error($"Метод {methodName} еще не реализован (ApiServiceEngine.ServiceAPI.Execute).");
-            return HttpStatusCode.NotImplemented;
+            return ExecuteMethod(service.Methods[methodName], parameters);
         }
 
-        protected HttpWebResponse GetResonse(string request)
+        public (object Info, HttpStatusCode Status) ExecuteMethod(Method method, StringDictionary parameters)
         {
-            HttpWebRequest http = (HttpWebRequest)WebRequest.Create(request);
+            Type type = GetType();
+            MethodInfo methodInfo = type.GetMethod(method.Name, new Type[] { typeof(Method), typeof(StringDictionary), typeof(bool) });
+            if (methodInfo != null)
+            {
+                return (ValueTuple<object, HttpStatusCode>)methodInfo.Invoke(this, new object[] { method, parameters, true });
+            }
+
+            return (null, HttpStatusCode.NotImplemented);
+        }
+
+        public HttpStatusCode Execute(Method method, StringDictionary parameters)
+        {
+            (object Info, HttpStatusCode Status) = ExecuteMethod(method, parameters);
+            if (Status == HttpStatusCode.NotImplemented)
+                LogHelper.Logger.Error($"Метод {method.Name} еще не реализован (ApiServiceEngine.ServiceAPI.Execute).");
+
+            return Status;
+        }
+
+        protected HttpWebResponse GetResponse(Method method, StringDictionary parameters)
+        {
+            string address = GetUrl(method, parameters);
+            LogHelper.Logger.Info(address);
+
+            HttpWebRequest http = (HttpWebRequest)WebRequest.Create(address);
             try
             {
                 HttpWebResponse response = (HttpWebResponse)http.GetResponse();
@@ -91,7 +89,31 @@
             return null;
         }
 
-        abstract protected string GetAddresWithParameters(string methodName, ParameterList parameters);
+        protected HttpWebResponse GetResponse(Method method, SerializedObject obj)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(GetBaseUrl(method));
+            byte[] data = Encoding.ASCII.GetBytes(obj.Json());
+
+            request.Method = "POST";
+            request.ContentType = "application/json";
+            request.ContentLength = data.Length;
+
+            using (var stream = request.GetRequestStream())
+            {
+                stream.Write(data, 0, data.Length);
+            }
+
+            return (HttpWebResponse)request.GetResponse();
+        }
+
+        abstract protected string GetBaseUrl(Method method);
+
+        abstract protected string GetParametersUrl(Method method, StringDictionary parameters);
+
+        protected string GetUrl(Method method, StringDictionary parameters)
+        {
+            return GetBaseUrl(method) + GetParametersUrl(method, parameters);
+        }
 
         protected string Sql(FbCommand cmd)
         {
@@ -108,7 +130,7 @@
             return $"{cmd_text}({builder.ToString()})";
         }
 
-        protected (int code, string message) ExecuteProcedure(string name, ParameterList parameters, object obj)
+        protected (int code, string message) ExecuteProcedure(string name, StringDictionary parameters, params object[] obj)
         {
             (int code, string message) result = (0, string.Empty);
 
@@ -139,36 +161,43 @@
             return result;
         }
 
-        FbCommand Prepare(string methodName, ParameterList parameters, object obj)
+        FbCommand Prepare(string methodName, StringDictionary parameters, params object[] obj)
         {
-            Method method = Config.Methods.Get(methodName);
+            Method method = service.Methods[methodName];
 
             FbCommand cmd = new FbCommand(method.Procedure, Connection, Transaction)
             {
                 CommandType = System.Data.CommandType.StoredProcedure
             };
 
-            foreach (ParameterMethod p in method.OfType<ParameterMethod>())
+            foreach (Parameter p in method.In.OfType<Parameter>().Where(x => !string.IsNullOrEmpty(x.Db.Field)))
             {
-                if (string.IsNullOrWhiteSpace(p.Field))
+                if (!parameters.ContainsKey(p.Name))
                     continue;
 
-                object o;
-                if (p.In)
-                {
-                    ParameterValue pv = parameters.Get(method.Name, p.Name);
-                    if (pv == null)
-                        continue;
+                cmd.Parameters.Add(p.Db.Field, p.Db.Type, p.Db.Length).Value = parameters[p.Name];
+            }
 
-                    o = parameters.Get(method.Name, p.Name).Value;
-                }
-                else
+            foreach (Parameter p in method.Out.OfType<Parameter>().Where(x => !string.IsNullOrEmpty(x.Db.Field)))
+            {
+                object o = null;
+                foreach (object item in obj)
                 {
-                    string name = p.Name.Substring(0, 1).ToUpper() + p.Name.Substring(1);
-                    o = obj.GetType().GetProperty(name).GetValue(obj);
+                    PropertyInfo prop = item.GetType().GetProperty(Inflector.Pascalize(p.ApiName));
+                    if (prop == null)
+                    {
+                        prop = item.GetType().GetProperty(Inflector.Pascalize(p.Name));
+                    }
+
+                    if (prop != null)
+                    {
+                        o = prop.GetValue(item);
+                        break;
+                    }
                 }
 
-                cmd.Parameters.Add(p.Field, p.FieldType, p.Length).Value = o;
+                if (o != null)
+                    cmd.Parameters.Add(p.Db.Field, p.Db.Type, p.Db.Length).Value = o;
             }
 
             return cmd;

@@ -10,6 +10,12 @@
     <externalType name="DateTime" namespace="System" />
     <externalType name="TimeSpan" namespace="System" />
     <externalType name="FbDbType" namespace="FirebirdSql.Data.FirebirdClient" />
+    <enumeratedType name="RequestMethod" namespace="ApiServiceEngine.Configuration">
+      <literals>
+        <enumerationLiteral name="Get" />
+        <enumerationLiteral name="Post" />
+      </literals>
+    </enumeratedType>
   </typeDefinitions>
   <configurationElements>
     <configurationSection name="ApiSection" codeGenOptions="Singleton, XmlnsProperty" xmlSectionName="api">
@@ -88,11 +94,21 @@
             <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Boolean" />
           </type>
         </attributeProperty>
+        <attributeProperty name="IsList" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="is_list" isReadOnly="false" defaultValue="false">
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Boolean" />
+          </type>
+        </attributeProperty>
       </attributeProperties>
       <elementProperties>
         <elementProperty name="Db" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="db" isReadOnly="false">
           <type>
             <configurationElementMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/DbProperty" />
+          </type>
+        </elementProperty>
+        <elementProperty name="Recive" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="recive" isReadOnly="false">
+          <type>
+            <configurationElementMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Recive" />
           </type>
         </elementProperty>
       </elementProperties>
@@ -141,6 +157,16 @@
         <attributeProperty name="Procedure" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="procedure" isReadOnly="false">
           <type>
             <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
+          </type>
+        </attributeProperty>
+        <attributeProperty name="Version" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="version" isReadOnly="false">
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Int32" />
+          </type>
+        </attributeProperty>
+        <attributeProperty name="Request" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="request" isReadOnly="false" defaultValue="RequestMethod.Get">
+          <type>
+            <enumeratedTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/RequestMethod" />
           </type>
         </attributeProperty>
       </attributeProperties>
@@ -217,6 +243,25 @@
         <configurationElementMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Service" />
       </itemType>
     </configurationElementCollection>
+    <configurationElement name="Recive">
+      <attributeProperties>
+        <attributeProperty name="Method" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="method" isReadOnly="false">
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
+          </type>
+        </attributeProperty>
+        <attributeProperty name="Parameter" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="parameter" isReadOnly="false">
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
+          </type>
+        </attributeProperty>
+        <attributeProperty name="Template" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="template" isReadOnly="false" defaultValue="&quot;*&quot;">
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
+          </type>
+        </attributeProperty>
+      </attributeProperties>
+    </configurationElement>
   </configurationElements>
   <propertyValidators>
     <validators />

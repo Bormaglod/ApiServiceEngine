@@ -2,20 +2,23 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Specialized;
     using System.Configuration;
     using System.Linq;
     using System.Reflection;
     using System.Net;
-    using System.Text;
-    using ApiServiceEngine.Configuration;
     using FirebirdSql.Data.FirebirdClient;
+    using ApiServiceEngine.Configuration;
 
     class Program
     {
-        static readonly ApiConfigSection config = ApiConfigSection.GetSection(ConfigurationUserLevel.None);
-
         static void Main(string[] args)
         {
+            foreach (string item in args)
+            {
+                LogHelper.Logger.Debug($"Arguments = {item}");
+            }
+            
             LogHelper.Logger.Info("Starting ApiServiveEngine");
 
             if (args.Length == 0)
@@ -25,7 +28,7 @@
             }
 
             // задача на выполнение
-            Task task = config.Tasks.Get(args[0]);
+            Task task = ApiSection.Instance.Tasks[args[0]];
             if (task == null)
             {
                 LogHelper.Logger.Warn($"Задача {args[0]}, заданная в параметрах, не найдена в списке задач (configuration/api/tasks) и не будет выполнена.");
@@ -47,28 +50,28 @@
             try
             {
                 IEnumerable<ServiceAPI> services = LoadServices(conn, tran);
-                ParameterList parameters = LoadParameters(args);
+                StringDictionary parameters = LoadParameters(args);
 
                 LogHelper.Logger.Info($"Выполнение задачи {task.Name}.");
 
                 // выполнение всех методов задачи
-                foreach (TaskMethod tm in task.Methods)
+                foreach (RunMethod runMethod in task.Methods)
                 {
-                    Service service = config.Services.GetByMethod(tm.Method);
+                    Service service = GetService(runMethod.Method);
                     if (service == null)
                     {
-                        LogHelper.Logger.Error($"В задаче {task.Name} указан метод {tm.Method} который отсутствует во всех сервисах. Метод будет пропущен.");
+                        LogHelper.Logger.Error($"В задаче {task.Name} указан метод {runMethod.Method} который отсутствует во всех сервисах. Метод будет пропущен.");
                         continue;
                     }
 
                     ServiceAPI api = services.FirstOrDefault(x => x.Name == service.Name);
                     if (api == null)
                     {
-                        LogHelper.Logger.Error($"При попытке выполнить метод {service.Name}.{tm.Method} обнаружилось, что в списке ранее созданных сервисов неожиданно не найден {service.Name}.");
+                        LogHelper.Logger.Error($"При попытке выполнить метод {service.Name}.{runMethod.Method} обнаружилось, что в списке ранее созданных сервисов неожиданно не найден {service.Name}.");
                         continue;
                     }
 
-                    Method m = service.Methods.Get(tm.Method);
+                    Method m = service.Methods[runMethod.Method];
                     if (m == null)
                     {
                         LogHelper.Logger.Error($"Заявленный на выполнение метод {service.Name}.{m.Name} отсутствует в списке методов сервиса. Метод не будет выполнен.");
@@ -76,7 +79,7 @@
                     }
 
                     // проверим наличие обязательных параметров
-                    StringBuilder builder = new StringBuilder();
+                    /*StringBuilder builder = new StringBuilder();
                     foreach (ParameterMethod p in m.OfType<ParameterMethod>().Where(x => x.Required && x.In))
                     {
                         ParameterValue pv = parameters.Get(m.Name, p.Name);
@@ -90,11 +93,11 @@
 
                         LogHelper.Logger.Error($"Для метода {m.Name} обязательно использование параметров [{paramNeeded}]. Метод не будет выполнен.");
                         continue;
-                    }
+                    }*/
 
                     LogHelper.Logger.Info($"Выполнение метода {m.Name}.");
 
-                    HttpStatusCode statusCode = api.Execute(tm.Method, parameters);
+                    HttpStatusCode statusCode = api.Execute(m, parameters);
                 }
             }
             finally
@@ -125,7 +128,7 @@
             // список всех описанных сервисов
             List<ServiceAPI> services = new List<ServiceAPI>();
 
-            foreach (Service service in config.Services)
+            foreach (Service service in ApiSection.Instance.Services)
             {
                 Type type = Assembly.GetCallingAssembly().GetTypes().FirstOrDefault(x => x.FullName == service.Type);
                 if (type != null)
@@ -149,24 +152,36 @@
             return services;
         }
 
-        static ParameterList LoadParameters(string[] args)
+        static StringDictionary LoadParameters(string[] args)
         {
-            ParameterList parameters = new ParameterList();
-            foreach (Parameter item in config.Parameters)
-            {
-                parameters.Add(item);
-            }
+            StringDictionary parameters = new StringDictionary();
 
             //список входных параметров
             for (int i = 1; i < args.Length; i++)
             {
                 string[] p = args[i].Split('=');
-                ParameterValue pv = parameters.Get(p[0].Substring(2));
-                if (pv != null)
-                    pv.Activate(p[1]);
+                parameters.Add(p[0].Substring(2), p[1]);
+
+                LogHelper.Logger.Debug($"Parameter {p[0]} = {p[1]}");
             }
 
             return parameters;
+        }
+
+        static Service GetService(string methodName)
+        {
+            foreach (Service service in ApiSection.Instance.Services)
+            {
+                foreach (Method method in service.Methods)
+                {
+                    if (method.Name == methodName)
+                    {
+                        return service;
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }

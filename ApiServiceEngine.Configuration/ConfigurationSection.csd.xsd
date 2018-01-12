@@ -87,6 +87,11 @@
 					<xs:documentation>The Db.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
+			<xs:element minOccurs="0" name="recive" type="tns:ApiServiceEngine.Configuration.ReciveCT">
+				<xs:annotation>
+					<xs:documentation>The Recive.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
 		</xs:choice>
 		<xs:attribute name="name" use="required" type="xs:string">
 			<xs:annotation>
@@ -111,6 +116,11 @@
 		<xs:attribute name="required" use="optional" type="xs:boolean">
 			<xs:annotation>
 				<xs:documentation>The Required.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="is_list" use="optional" type="xs:boolean">
+			<xs:annotation>
+				<xs:documentation>The IsList.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
@@ -191,6 +201,16 @@
 		<xs:attribute name="procedure" use="optional" type="xs:string">
 			<xs:annotation>
 				<xs:documentation>The Procedure.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="version" use="optional" type="xs:int">
+			<xs:annotation>
+				<xs:documentation>The Version.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="request" use="optional" type="tns:RequestMethod">
+			<xs:annotation>
+				<xs:documentation>The Request.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
@@ -274,4 +294,38 @@
 				</xs:attribute>
 		</xs:complexType>
 	<xs:complexType name="ApiServiceEngine.Configuration.ServicesClearCT" />
+	<xs:complexType name="ApiServiceEngine.Configuration.ReciveCT">
+		<xs:attribute name="method" use="required" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The Method.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="parameter" use="required" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The Parameter.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="template" use="optional" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The Template.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:simpleType name="RequestMethod">
+		<xs:annotation>
+			<xs:documentation>RequestMethod.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Get">
+				<xs:annotation>
+					<xs:documentation>Get.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Post">
+				<xs:annotation>
+					<xs:documentation>Post.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
 </xs:schema>

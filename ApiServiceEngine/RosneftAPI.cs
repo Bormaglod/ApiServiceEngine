@@ -9,7 +9,6 @@
     using System.Runtime.Serialization;
     using System.Runtime.Serialization.Json;
     using System.Text;
-    using System.Threading.Tasks;
     using ApiServiceEngine.Configuration;
     using FirebirdSql.Data.FirebirdClient;
 
@@ -56,7 +55,6 @@
 
         #endregion
         
-        
         #region Operation
 
         [DataContract]
@@ -99,7 +97,7 @@
             public string OperGuid { get; set; }
 
             [DataMember]
-            public int Pos { get; set; }
+            public decimal Pos { get; set; }
         }
 
         [DataContract]
@@ -164,8 +162,8 @@
         [DataContract]
         class Card
         {
-            [DataMember]
-            public decimal ID { get; set; }
+            [DataMember(Name = "ID")]
+            public decimal CardID { get; set; }
 
             [DataMember]
             public string Status { get; set; }
@@ -245,37 +243,12 @@
         }
 
         [DataContract]
-        class SerializedObject
-        {
-            public string Json()
-            {
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(LimitListRequest));
-                string json = string.Empty;
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    serializer.WriteObject(stream, this);
-                    json = Encoding.Default.GetString(stream.ToArray());
-                }
-
-                return json;
-            }
-        }
-
-        [DataContract]
         class LimitListRequest : SerializedObject
         {
-            public LimitListRequest(Service config, ParameterList parameters)
+            public LimitListRequest(ServiceAPI api, Service service, Method method, StringDictionary parameters) : base(api, service, method, parameters)
             {
-                User = config.Settings.Login;
-                Password = config.Settings.Password;
-                SubjID = int.Parse(parameters.Get("ContractID").Value);
-
-                string[] cards = parameters.Get("Cards").Value.Split(new char[] { ',' });
-                CardList = new decimal[cards.Length];
-                for (int i = 0; i < cards.Length; i++)
-                {
-                    CardList[i] = decimal.Parse(cards[i]);
-                }
+                User = service.Settings.Login;
+                Password = service.Settings.Password;
             }
 
             [DataMember]
@@ -291,166 +264,318 @@
             public decimal[] CardList { get; set; }
         }
 
+        [DataContract]
+        class GoodsLimitItem
+        {
+            [DataMember(Name = "ID")]
+            public int GoodsID { get; set; }
+
+            [DataMember]
+            public string Name { get; set; }
+
+            [DataMember]
+            public string Unit { get; set; }
+
+            [DataMember]
+            public string IndLimit { get; set; }
+
+            [DataMember]
+            public string LimitScheme { get; set; }
+
+            [DataMember]
+            public string LimitType { get; set; }
+
+            [DataMember]
+            public decimal Limit { get; set; }
+
+            [DataMember]
+            public decimal MaxLimit { get; set; }
+
+            [DataMember]
+            public string OilStatus { get; set; }
+
+            [DataMember]
+            public decimal OilValue { get; set; }
+
+            [DataMember]
+            public DateTime OliBegin { get; set; }
+
+            [DataMember]
+            public DateTime OliEnd { get; set; }
+        }
+
+        [DataContract]
+        class GoodsLimitOffline
+        {
+            [DataMember]
+            public List<GoodsLimitItem> Item { get; set; }
+        }
+
+        [DataContract]
+        class LimitOffline
+        {
+            [DataMember(Name = "ID")]
+            public decimal CardID { get; set; }
+
+            [DataMember]
+            public int ErrorCode { get; set; }
+
+            [DataMember]
+            public string ErrorMessage { get; set; }
+
+            [DataMember]
+            public GoodsLimitOffline Goods { get; set; }
+        }
+
+        [DataContract]
+        class LimitListOffline
+        {
+            [DataMember]
+            public List<LimitOffline> Card { get; set; }
+        }
+
         #endregion
 
         public RosneftAPI(Service config, FbConnection connection, FbTransaction transaction) : base(config, connection, transaction)
         {
         }
 
-        public HttpStatusCode InfoCardContract(HttpWebResponse response, ParameterList parameters)
+        public (object Info, HttpStatusCode Status) InfoCardContract(Method method, StringDictionary parameters, bool writeToDatabase)
         {
+            HttpWebResponse response = GetResponse(method, parameters);
+            if (response == null)
+                return (null, HttpStatusCode.BadRequest);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+                return (null, response.StatusCode);
+
             DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(InfoCard));
             InfoCard info = (InfoCard)serializer.ReadObject(response.GetResponseStream());
-            ExecuteProcedure("InfoCardContract", parameters, info);
+            if (writeToDatabase)
+                ExecuteProcedure(method.Name, parameters, info);
 
-            return response.StatusCode;
+            return (info, response.StatusCode);
         }
 
-        public HttpStatusCode InfoGoodsList(HttpWebResponse response, ParameterList parameters)
+        public (object Info, HttpStatusCode Status) InfoGoodsList(Method method, StringDictionary parameters, bool writeToDatabase)
         {
+            HttpWebResponse response = GetResponse(method, parameters);
+            if (response == null)
+                return (null, HttpStatusCode.BadRequest);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+                return (null, response.StatusCode);
+
             DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(InfoGoods));
             InfoGoods info = (InfoGoods)serializer.ReadObject(response.GetResponseStream());
-            foreach (Goods g in info.GoodsList)
+            if (writeToDatabase)
             {
-                ExecuteProcedure("InfoGoodsList", parameters, g);
+                foreach (Goods g in info.GoodsList)
+                {
+                    ExecuteProcedure(method.Name, parameters, g);
+                }
             }
 
-            return response.StatusCode;
+            return (info.GoodsList, response.StatusCode);
         }
 
-        public HttpStatusCode InfoCardOperation(HttpWebResponse response, ParameterList parameters)
+        public (object Info, HttpStatusCode Status) InfoCardOperation(Method method, StringDictionary parameters, bool writeToDatabase)
         {
+            HttpWebResponse response = GetResponse(method, parameters);
+            if (response == null)
+                return (null, HttpStatusCode.BadRequest);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+                return (null, response.StatusCode);
+
             DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Operations));
             Operations info = (Operations)serializer.ReadObject(response.GetResponseStream());
-            foreach (Operation op in info.OperationList)
+            if (writeToDatabase)
             {
-                ExecuteProcedure("InfoCardOperation", parameters, op);
+                foreach (Operation op in info.OperationList)
+                {
+                    ExecuteProcedure(method.Name, parameters, op);
+                }
             }
 
-            return response.StatusCode;
+            return (info.OperationList, response.StatusCode);
         }
 
-        public HttpStatusCode InfoCardOperationDisc(HttpWebResponse response, ParameterList parameters)
+        public (object Info, HttpStatusCode Status) InfoCardOperationDisc(Method method, StringDictionary parameters, bool writeToDatabase)
         {
+            HttpWebResponse response = GetResponse(method, parameters);
+            if (response == null)
+                return (null, HttpStatusCode.BadRequest);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+                return (null, response.StatusCode);
+
             DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(OperationsDisc));
             OperationsDisc info = (OperationsDisc)serializer.ReadObject(response.GetResponseStream());
-            foreach (OperationDisc op in info.OperationList)
+            if (writeToDatabase)
             {
-                ExecuteProcedure("InfoCardOperationDisc", parameters, op);
+                foreach (OperationDisc op in info.OperationList)
+                {
+                    ExecuteProcedure(method.Name, parameters, op);
+                }
             }
 
-            return response.StatusCode;
+            return (info.OperationList, response.StatusCode);
         }
 
-        public HttpStatusCode InfoCardAccountSaldo(HttpWebResponse response, ParameterList parameters)
+        public (object Info, HttpStatusCode Status) InfoCardAccountSaldo(Method method, StringDictionary parameters, bool writeToDatabase)
         {
+            HttpWebResponse response = GetResponse(method, parameters);
+            if (response == null)
+                return (null, HttpStatusCode.BadRequest);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+                return (null, response.StatusCode);
+
             DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(CardAccounts));
             CardAccounts info = (CardAccounts)serializer.ReadObject(response.GetResponseStream());
-            foreach (CardAccount ca in info.CardAccountList)
+            if (writeToDatabase)
             {
-                ExecuteProcedure("InfoCardAccountSaldo", parameters, ca);
+                foreach (CardAccount ca in info.CardAccountList)
+                {
+                    ExecuteProcedure(method.Name, parameters, ca);
+                }
             }
 
-            return response.StatusCode;
+            return (info.CardAccountList, response.StatusCode);
         }
 
-        public HttpStatusCode InfoContractCardList(HttpWebResponse response, ParameterList parameters)
+        public (object Info, HttpStatusCode Status) InfoContractCardList(Method method, StringDictionary parameters, bool writeToDatabase)
         {
+            HttpWebResponse response = GetResponse(method, parameters);
+            if (response == null)
+                return (null, HttpStatusCode.BadRequest);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+                return (null, response.StatusCode);
+
             DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(CardList));
             CardList info = (CardList)serializer.ReadObject(response.GetResponseStream());
-            foreach (Card c in info.Cards)
+            if (writeToDatabase)
             {
-                ExecuteProcedure("InfoContractCardList", parameters, c);
+                foreach (Card c in info.Cards)
+                {
+                    ExecuteProcedure(method.Name, parameters, c);
+                }
             }
 
-            return response.StatusCode;
+            return (info.Cards, response.StatusCode);
         }
 
-        public HttpStatusCode InfoContractAccountSaldo(HttpWebResponse response, ParameterList parameters)
+        public (object Info, HttpStatusCode Status) InfoContractAccountSaldo(Method method, StringDictionary parameters, bool writeToDatabase)
         {
+            HttpWebResponse response = GetResponse(method, parameters);
+            if (response == null)
+                return (null, HttpStatusCode.BadRequest);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+                return (null, response.StatusCode);
+
             DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ContractGoodsList));
             ContractGoodsList info = (ContractGoodsList)serializer.ReadObject(response.GetResponseStream());
-            foreach (ContractGoods c in info.ContractGoods)
+            if (writeToDatabase)
             {
-                ExecuteProcedure("InfoContractAccountSaldo", parameters, c);
+                foreach (ContractGoods c in info.ContractGoods)
+                {
+                    ExecuteProcedure(method.Name, parameters, c);
+                }
             }
 
-            return response.StatusCode;
+            return (info.ContractGoods, response.StatusCode);
         }
 
-        public HttpStatusCode InfoCardLimitSum(ParameterList parameters)
+        public (object Info, HttpStatusCode Status) InfoCardLimitSum(Method method, StringDictionary parameters, bool writeToDatabase)
         {
-            LimitListRequest r = new LimitListRequest(Config, parameters);
-            HttpWebResponse response = GetRequest("InfoCardLimitSum", r);
+            LimitListRequest r = new LimitListRequest(this, Service, method, parameters);
+            HttpWebResponse response = GetResponse(method, r);
             if (response == null)
-            {
-                return HttpStatusCode.BadRequest;
-            }
+                return (null, HttpStatusCode.BadRequest);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+                return (null, response.StatusCode);
 
             DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(LimitList));
             LimitList info = (LimitList)serializer.ReadObject(response.GetResponseStream());
-            foreach (Limit l in info.Limit)
+            if (writeToDatabase)
             {
-                ExecuteProcedure("InfoCardLimitSum", parameters, l);
+                foreach (Limit l in info.Limit)
+                {
+                    ExecuteProcedure(method.Name, parameters, l);
+                }
             }
 
-            return response.StatusCode;
+            return (info.Limit, response.StatusCode);
         }
 
-        HttpWebResponse GetRequest(string method, SerializedObject obj)
+        public (object Info, HttpStatusCode Status) InfoCardLimitOffline(Method method, StringDictionary parameters, bool writeToDatabase)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"{Address}/{method}");
-            byte[] data = Encoding.ASCII.GetBytes(obj.Json());
+            LimitListRequest r = new LimitListRequest(this, Service, method, parameters);
+            HttpWebResponse response = GetResponse(method, r);
+            if (response == null)
+                return (null, HttpStatusCode.BadRequest);
 
-            request.Method = "POST";
-            request.ContentType = "application/json";
-            request.ContentLength = data.Length;
+            if (response.StatusCode != HttpStatusCode.OK)
+                return (null, response.StatusCode);
 
-            using (var stream = request.GetRequestStream())
+            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(LimitListOffline));
+            LimitListOffline info = (LimitListOffline)serializer.ReadObject(response.GetResponseStream());
+            if (writeToDatabase)
             {
-                stream.Write(data, 0, data.Length);
+                foreach (LimitOffline l in info.Card)
+                {
+                    foreach (GoodsLimitItem item in l.Goods.Item)
+                    {
+                        ExecuteProcedure(method.Name, parameters, l, item);
+                    }
+                }
             }
 
-            return (HttpWebResponse)request.GetResponse();
+            return (info.Card, response.StatusCode);
         }
 
-        override protected string GetAddresWithParameters(string methodName, ParameterList parameters)
+        protected override string GetBaseUrl(Method method)
+        {
+            int version = method.Version == 0 ? 2 : method.Version;
+            string apiName = string.IsNullOrEmpty(method.ApiName) ? method.Name : method.ApiName;
+            return $"{Url}/v{version}/{apiName}/";
+        }
+
+        override protected string GetParametersUrl(Method method, StringDictionary parameters)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append($"{Address}/{methodName}/");
-            Method method = Config.Methods.Get(methodName);
-            if (method != null)
+            
+            foreach (Parameter param in method.In.OfType<Parameter>().Where(x => x.IsPage).OrderBy(x => x.Index))
             {
-                foreach (ParameterMethod param in method.OfType<ParameterMethod>().Where(x => x.IsPage && x.In).OrderBy(x => x.Index))
+                if (!parameters.ContainsKey(param.Name))
+                    continue;
+
+                sb.Append($"{parameters[param.Name]}/");
+            }
+
+
+            IEnumerable<Parameter> p = method.In.OfType<Parameter>().Where(x => !x.IsPage);
+            string ep = GetExtendedParameteres();
+            if (p.Any() || !string.IsNullOrWhiteSpace(ep))
+            {
+                sb.Append('?');
+
+                foreach (Parameter param in p)
                 {
-                    ParameterValue pv = parameters.Get(method.ApiName, param.Name);
-                    if (pv != null)
-                    {
-                        sb.Append($"{pv.Value}/");
-                    }
+                    if (!parameters.ContainsKey(param.Name))
+                        continue;
+
+                    sb.Append($"{param.ApiName}={parameters[param.Name]}&");
                 }
 
-
-                IEnumerable<ParameterMethod> p = method.OfType<ParameterMethod>().Where(x => !x.IsPage && x.In);
-                string ep = GetExtendedParameteres();
-                if (p.Any() || !string.IsNullOrWhiteSpace(ep))
-                {
-                    sb.Append('?');
-
-                    foreach (ParameterMethod param in p)
-                    {
-                        ParameterValue pv = parameters.Get(method.ApiName, param.Name);
-                        if (pv != null)
-                        {
-                            sb.Append($"{param.Name}={pv.Value}&");
-                        }
-                    }
-
-                    if (string.IsNullOrWhiteSpace(ep))
-                        sb.Remove(sb.Length - 1, 1);
-                    else
-                        sb.Append(ep);
-                }
+                if (string.IsNullOrWhiteSpace(ep))
+                    sb.Remove(sb.Length - 1, 1);
+                else
+                    sb.Append(ep);
             }
 
             return sb.ToString();

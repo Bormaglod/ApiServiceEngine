@@ -746,6 +746,32 @@ namespace ApiServiceEngine.Configuration
         }
         #endregion
         
+        #region IsList Property
+        /// <summary>
+        /// The XML name of the <see cref="IsList"/> property.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string IsListPropertyName = "is_list";
+        
+        /// <summary>
+        /// Gets or sets the IsList.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        [global::System.ComponentModel.DescriptionAttribute("The IsList.")]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Parameter.IsListPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false, DefaultValue=false)]
+        public virtual bool IsList
+        {
+            get
+            {
+                return ((bool)(base[global::ApiServiceEngine.Configuration.Parameter.IsListPropertyName]));
+            }
+            set
+            {
+                base[global::ApiServiceEngine.Configuration.Parameter.IsListPropertyName] = value;
+            }
+        }
+        #endregion
+        
         #region Db Property
         /// <summary>
         /// The XML name of the <see cref="Db"/> property.
@@ -768,6 +794,32 @@ namespace ApiServiceEngine.Configuration
             set
             {
                 base[global::ApiServiceEngine.Configuration.Parameter.DbPropertyName] = value;
+            }
+        }
+        #endregion
+        
+        #region Recive Property
+        /// <summary>
+        /// The XML name of the <see cref="Recive"/> property.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string RecivePropertyName = "recive";
+        
+        /// <summary>
+        /// Gets or sets the Recive.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        [global::System.ComponentModel.DescriptionAttribute("The Recive.")]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Parameter.RecivePropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
+        public virtual global::ApiServiceEngine.Configuration.Recive Recive
+        {
+            get
+            {
+                return ((global::ApiServiceEngine.Configuration.Recive)(base[global::ApiServiceEngine.Configuration.Parameter.RecivePropertyName]));
+            }
+            set
+            {
+                base[global::ApiServiceEngine.Configuration.Parameter.RecivePropertyName] = value;
             }
         }
         #endregion
@@ -1308,6 +1360,58 @@ namespace ApiServiceEngine.Configuration
             set
             {
                 base[global::ApiServiceEngine.Configuration.Method.ProcedurePropertyName] = value;
+            }
+        }
+        #endregion
+        
+        #region Version Property
+        /// <summary>
+        /// The XML name of the <see cref="Version"/> property.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string VersionPropertyName = "version";
+        
+        /// <summary>
+        /// Gets or sets the Version.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        [global::System.ComponentModel.DescriptionAttribute("The Version.")]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Method.VersionPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
+        public virtual int Version
+        {
+            get
+            {
+                return ((int)(base[global::ApiServiceEngine.Configuration.Method.VersionPropertyName]));
+            }
+            set
+            {
+                base[global::ApiServiceEngine.Configuration.Method.VersionPropertyName] = value;
+            }
+        }
+        #endregion
+        
+        #region Request Property
+        /// <summary>
+        /// The XML name of the <see cref="Request"/> property.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string RequestPropertyName = "request";
+        
+        /// <summary>
+        /// Gets or sets the Request.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        [global::System.ComponentModel.DescriptionAttribute("The Request.")]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Method.RequestPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false, DefaultValue=RequestMethod.Get)]
+        public virtual global::ApiServiceEngine.Configuration.RequestMethod Request
+        {
+            get
+            {
+                return ((global::ApiServiceEngine.Configuration.RequestMethod)(base[global::ApiServiceEngine.Configuration.Method.RequestPropertyName]));
+            }
+            set
+            {
+                base[global::ApiServiceEngine.Configuration.Method.RequestPropertyName] = value;
             }
         }
         #endregion
@@ -1955,5 +2059,127 @@ namespace ApiServiceEngine.Configuration
             return false;
         }
         #endregion
+    }
+}
+namespace ApiServiceEngine.Configuration
+{
+    
+    
+    /// <summary>
+    /// The Recive Configuration Element.
+    /// </summary>
+    public partial class Recive : global::System.Configuration.ConfigurationElement
+    {
+        
+        #region IsReadOnly override
+        /// <summary>
+        /// Gets a value indicating whether the element is read-only.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        public override bool IsReadOnly()
+        {
+            return false;
+        }
+        #endregion
+        
+        #region Method Property
+        /// <summary>
+        /// The XML name of the <see cref="Method"/> property.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string MethodPropertyName = "method";
+        
+        /// <summary>
+        /// Gets or sets the Method.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        [global::System.ComponentModel.DescriptionAttribute("The Method.")]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Recive.MethodPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
+        public virtual string Method
+        {
+            get
+            {
+                return ((string)(base[global::ApiServiceEngine.Configuration.Recive.MethodPropertyName]));
+            }
+            set
+            {
+                base[global::ApiServiceEngine.Configuration.Recive.MethodPropertyName] = value;
+            }
+        }
+        #endregion
+        
+        #region Parameter Property
+        /// <summary>
+        /// The XML name of the <see cref="Parameter"/> property.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string ParameterPropertyName = "parameter";
+        
+        /// <summary>
+        /// Gets or sets the Parameter.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        [global::System.ComponentModel.DescriptionAttribute("The Parameter.")]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Recive.ParameterPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
+        public virtual string Parameter
+        {
+            get
+            {
+                return ((string)(base[global::ApiServiceEngine.Configuration.Recive.ParameterPropertyName]));
+            }
+            set
+            {
+                base[global::ApiServiceEngine.Configuration.Recive.ParameterPropertyName] = value;
+            }
+        }
+        #endregion
+        
+        #region Template Property
+        /// <summary>
+        /// The XML name of the <see cref="Template"/> property.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string TemplatePropertyName = "template";
+        
+        /// <summary>
+        /// Gets or sets the Template.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        [global::System.ComponentModel.DescriptionAttribute("The Template.")]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Recive.TemplatePropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false, DefaultValue="*")]
+        public virtual string Template
+        {
+            get
+            {
+                return ((string)(base[global::ApiServiceEngine.Configuration.Recive.TemplatePropertyName]));
+            }
+            set
+            {
+                base[global::ApiServiceEngine.Configuration.Recive.TemplatePropertyName] = value;
+            }
+        }
+        #endregion
+    }
+}
+namespace ApiServiceEngine.Configuration
+{
+    
+    
+    /// <summary>
+    /// RequestMethod.
+    /// </summary>
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+    public enum RequestMethod
+    {
+        
+        /// <summary>
+        /// Get.
+        /// </summary>
+        Get,
+        
+        /// <summary>
+        /// Post.
+        /// </summary>
+        Post,
     }
 }
