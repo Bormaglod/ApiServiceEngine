@@ -13,12 +13,12 @@
 		<xs:choice minOccurs="0" maxOccurs="unbounded">
 			<xs:element minOccurs="0" name="tasks" type="tns:ApiServiceEngine.Configuration.TasksCT">
 				<xs:annotation>
-					<xs:documentation>The Tasks.</xs:documentation>
+					<xs:documentation>Список доступных задач</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element minOccurs="0" name="services" type="tns:ApiServiceEngine.Configuration.ServicesCT">
 				<xs:annotation>
-					<xs:documentation>The Services.</xs:documentation>
+					<xs:documentation>Список доступных методов</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 		</xs:choice>
@@ -234,17 +234,17 @@
 	<xs:complexType name="ApiServiceEngine.Configuration.SettingsCT">
 		<xs:attribute name="url" use="required" type="xs:string">
 			<xs:annotation>
-				<xs:documentation>The Url.</xs:documentation>
+				<xs:documentation>Адрес</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="login" use="optional" type="xs:string">
 			<xs:annotation>
-				<xs:documentation>The Login.</xs:documentation>
+				<xs:documentation>Имя пользователя</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="password" use="optional" type="xs:string">
 			<xs:annotation>
-				<xs:documentation>The Password.</xs:documentation>
+				<xs:documentation>Пароль</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
@@ -252,28 +252,28 @@
 		<xs:choice minOccurs="0" maxOccurs="unbounded">
 			<xs:element minOccurs="0" name="settings" type="tns:ApiServiceEngine.Configuration.SettingsCT">
 				<xs:annotation>
-					<xs:documentation>The Settings.</xs:documentation>
+					<xs:documentation>Основные настройки сервиса</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element minOccurs="0" name="methods" type="tns:ApiServiceEngine.Configuration.MethodsCT">
 				<xs:annotation>
-					<xs:documentation>The Methods.</xs:documentation>
+					<xs:documentation>Список методов, предоставляемых сервисом</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 		</xs:choice>
 		<xs:attribute name="name" use="required" type="xs:string">
 			<xs:annotation>
-				<xs:documentation>The Name.</xs:documentation>
+				<xs:documentation>Наименование сервиса</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="comment" use="optional" type="xs:string">
 			<xs:annotation>
-				<xs:documentation>The Comment.</xs:documentation>
+				<xs:documentation>Описание сервиса</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="type" use="required" type="xs:string">
 			<xs:annotation>
-				<xs:documentation>The Type.</xs:documentation>
+				<xs:documentation>Имя класса содержащего методы сервиса</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
@@ -281,7 +281,7 @@
 		<xs:choice minOccurs="0" maxOccurs="unbounded">
 			<xs:element minOccurs="0" maxOccurs="unbounded" name="service" type="tns:ApiServiceEngine.Configuration.ServiceCT">
 				<xs:annotation>
-					<xs:documentation>The Service Configuration Element.</xs:documentation>
+					<xs:documentation>Описание сервиса (способ доступа, методы)</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 		</xs:choice>
@@ -289,7 +289,7 @@
 	<xs:complexType name="ApiServiceEngine.Configuration.ServicesRemoveCT">
 				<xs:attribute name="name" use="required" type="xs:string">
 				<xs:annotation>
-					<xs:documentation>The Name.</xs:documentation>
+					<xs:documentation>Наименование сервиса</xs:documentation>
 				</xs:annotation>
 				</xs:attribute>
 		</xs:complexType>
@@ -303,11 +303,6 @@
 		<xs:attribute name="parameter" use="required" type="xs:string">
 			<xs:annotation>
 				<xs:documentation>The Parameter.</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:attribute name="template" use="optional" type="xs:string">
-			<xs:annotation>
-				<xs:documentation>The Template.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>

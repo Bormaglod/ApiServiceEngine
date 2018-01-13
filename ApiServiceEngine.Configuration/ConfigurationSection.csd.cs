@@ -88,10 +88,10 @@ namespace ApiServiceEngine.Configuration
         internal const string TasksPropertyName = "tasks";
         
         /// <summary>
-        /// Gets or sets the Tasks.
+        /// Gets or sets список доступных задач
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
-        [global::System.ComponentModel.DescriptionAttribute("The Tasks.")]
+        [global::System.ComponentModel.DescriptionAttribute("Список доступных задач")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.ApiSection.TasksPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
         public virtual global::ApiServiceEngine.Configuration.Tasks Tasks
         {
@@ -114,10 +114,10 @@ namespace ApiServiceEngine.Configuration
         internal const string ServicesPropertyName = "services";
         
         /// <summary>
-        /// Gets or sets the Services.
+        /// Gets or sets список доступных методов
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
-        [global::System.ComponentModel.DescriptionAttribute("The Services.")]
+        [global::System.ComponentModel.DescriptionAttribute("Список доступных методов")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.ApiSection.ServicesPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
         public virtual global::ApiServiceEngine.Configuration.Services Services
         {
@@ -1668,10 +1668,10 @@ namespace ApiServiceEngine.Configuration
         internal const string UrlPropertyName = "url";
         
         /// <summary>
-        /// Gets or sets the Url.
+        /// Gets or sets адрес
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
-        [global::System.ComponentModel.DescriptionAttribute("The Url.")]
+        [global::System.ComponentModel.DescriptionAttribute("Адрес")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Settings.UrlPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual string Url
         {
@@ -1694,10 +1694,10 @@ namespace ApiServiceEngine.Configuration
         internal const string LoginPropertyName = "login";
         
         /// <summary>
-        /// Gets or sets the Login.
+        /// Gets or sets имя пользователя
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
-        [global::System.ComponentModel.DescriptionAttribute("The Login.")]
+        [global::System.ComponentModel.DescriptionAttribute("Имя пользователя")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Settings.LoginPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
         public virtual string Login
         {
@@ -1720,10 +1720,10 @@ namespace ApiServiceEngine.Configuration
         internal const string PasswordPropertyName = "password";
         
         /// <summary>
-        /// Gets or sets the Password.
+        /// Gets or sets пароль
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
-        [global::System.ComponentModel.DescriptionAttribute("The Password.")]
+        [global::System.ComponentModel.DescriptionAttribute("Пароль")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Settings.PasswordPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
         public virtual string Password
         {
@@ -1744,8 +1744,9 @@ namespace ApiServiceEngine.Configuration
     
     
     /// <summary>
-    /// The Service Configuration Element.
+    /// Описание сервиса (способ доступа, методы)
     /// </summary>
+    [global::System.ComponentModel.DescriptionAttribute("Описание сервиса (способ доступа, методы)")]
     public partial class Service : global::System.Configuration.ConfigurationElement
     {
         
@@ -1768,10 +1769,10 @@ namespace ApiServiceEngine.Configuration
         internal const string NamePropertyName = "name";
         
         /// <summary>
-        /// Gets or sets the Name.
+        /// Gets or sets наименование сервиса
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
-        [global::System.ComponentModel.DescriptionAttribute("The Name.")]
+        [global::System.ComponentModel.DescriptionAttribute("Наименование сервиса")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Service.NamePropertyName, IsRequired=true, IsKey=true, IsDefaultCollection=false)]
         public virtual string Name
         {
@@ -1794,10 +1795,10 @@ namespace ApiServiceEngine.Configuration
         internal const string CommentPropertyName = "comment";
         
         /// <summary>
-        /// Gets or sets the Comment.
+        /// Gets or sets описание сервиса
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
-        [global::System.ComponentModel.DescriptionAttribute("The Comment.")]
+        [global::System.ComponentModel.DescriptionAttribute("Описание сервиса")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Service.CommentPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
         public virtual string Comment
         {
@@ -1820,10 +1821,10 @@ namespace ApiServiceEngine.Configuration
         internal const string TypePropertyName = "type";
         
         /// <summary>
-        /// Gets or sets the Type.
+        /// Gets or sets имя класса содержащего методы сервиса
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
-        [global::System.ComponentModel.DescriptionAttribute("The Type.")]
+        [global::System.ComponentModel.DescriptionAttribute("Имя класса содержащего методы сервиса")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Service.TypePropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
         public virtual string Type
         {
@@ -1846,10 +1847,10 @@ namespace ApiServiceEngine.Configuration
         internal const string SettingsPropertyName = "settings";
         
         /// <summary>
-        /// Gets or sets the Settings.
+        /// Gets or sets основные настройки сервиса
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
-        [global::System.ComponentModel.DescriptionAttribute("The Settings.")]
+        [global::System.ComponentModel.DescriptionAttribute("Основные настройки сервиса")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Service.SettingsPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
         public virtual global::ApiServiceEngine.Configuration.Settings Settings
         {
@@ -1872,10 +1873,10 @@ namespace ApiServiceEngine.Configuration
         internal const string MethodsPropertyName = "methods";
         
         /// <summary>
-        /// Gets or sets the Methods.
+        /// Gets or sets список методов, предоставляемых сервисом
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
-        [global::System.ComponentModel.DescriptionAttribute("The Methods.")]
+        [global::System.ComponentModel.DescriptionAttribute("Список методов, предоставляемых сервисом")]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Service.MethodsPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
         public virtual global::ApiServiceEngine.Configuration.Methods Methods
         {
@@ -2130,32 +2131,6 @@ namespace ApiServiceEngine.Configuration
             set
             {
                 base[global::ApiServiceEngine.Configuration.Recive.ParameterPropertyName] = value;
-            }
-        }
-        #endregion
-        
-        #region Template Property
-        /// <summary>
-        /// The XML name of the <see cref="Template"/> property.
-        /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
-        internal const string TemplatePropertyName = "template";
-        
-        /// <summary>
-        /// Gets or sets the Template.
-        /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
-        [global::System.ComponentModel.DescriptionAttribute("The Template.")]
-        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Recive.TemplatePropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false, DefaultValue="*")]
-        public virtual string Template
-        {
-            get
-            {
-                return ((string)(base[global::ApiServiceEngine.Configuration.Recive.TemplatePropertyName]));
-            }
-            set
-            {
-                base[global::ApiServiceEngine.Configuration.Recive.TemplatePropertyName] = value;
             }
         }
         #endregion

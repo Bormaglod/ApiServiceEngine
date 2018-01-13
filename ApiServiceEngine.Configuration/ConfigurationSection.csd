@@ -20,12 +20,12 @@
   <configurationElements>
     <configurationSection name="ApiSection" codeGenOptions="Singleton, XmlnsProperty" xmlSectionName="api">
       <elementProperties>
-        <elementProperty name="Tasks" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="tasks" isReadOnly="false">
+        <elementProperty name="Tasks" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="tasks" isReadOnly="false" documentation="Список доступных задач">
           <type>
             <configurationElementCollectionMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Tasks" />
           </type>
         </elementProperty>
-        <elementProperty name="Services" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="services" isReadOnly="false">
+        <elementProperty name="Services" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="services" isReadOnly="false" documentation="Список доступных методов">
           <type>
             <configurationElementCollectionMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Services" />
           </type>
@@ -190,48 +190,48 @@
     </configurationElementCollection>
     <configurationElement name="Settings">
       <attributeProperties>
-        <attributeProperty name="Url" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="url" isReadOnly="false">
+        <attributeProperty name="Url" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="url" isReadOnly="false" documentation="Адрес">
           <type>
             <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
           </type>
         </attributeProperty>
-        <attributeProperty name="Login" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="login" isReadOnly="false">
+        <attributeProperty name="Login" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="login" isReadOnly="false" documentation="Имя пользователя">
           <type>
             <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
           </type>
         </attributeProperty>
-        <attributeProperty name="Password" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="password" isReadOnly="false">
+        <attributeProperty name="Password" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="password" isReadOnly="false" documentation="Пароль">
           <type>
             <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
           </type>
         </attributeProperty>
       </attributeProperties>
     </configurationElement>
-    <configurationElement name="Service">
+    <configurationElement name="Service" documentation="Описание сервиса (способ доступа, методы)">
       <attributeProperties>
-        <attributeProperty name="Name" isRequired="true" isKey="true" isDefaultCollection="false" xmlName="name" isReadOnly="false">
+        <attributeProperty name="Name" isRequired="true" isKey="true" isDefaultCollection="false" xmlName="name" isReadOnly="false" documentation="Наименование сервиса">
           <type>
             <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
           </type>
         </attributeProperty>
-        <attributeProperty name="Comment" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="comment" isReadOnly="false">
+        <attributeProperty name="Comment" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="comment" isReadOnly="false" documentation="Описание сервиса">
           <type>
             <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
           </type>
         </attributeProperty>
-        <attributeProperty name="Type" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="type" isReadOnly="false">
+        <attributeProperty name="Type" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="type" isReadOnly="false" documentation="Имя класса содержащего методы сервиса">
           <type>
             <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
           </type>
         </attributeProperty>
       </attributeProperties>
       <elementProperties>
-        <elementProperty name="Settings" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="settings" isReadOnly="false">
+        <elementProperty name="Settings" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="settings" isReadOnly="false" documentation="Основные настройки сервиса">
           <type>
             <configurationElementMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Settings" />
           </type>
         </elementProperty>
-        <elementProperty name="Methods" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="methods" isReadOnly="false">
+        <elementProperty name="Methods" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="methods" isReadOnly="false" documentation="Список методов, предоставляемых сервисом">
           <type>
             <configurationElementCollectionMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Methods" />
           </type>
@@ -251,11 +251,6 @@
           </type>
         </attributeProperty>
         <attributeProperty name="Parameter" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="parameter" isReadOnly="false">
-          <type>
-            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
-          </type>
-        </attributeProperty>
-        <attributeProperty name="Template" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="template" isReadOnly="false" defaultValue="&quot;*&quot;">
           <type>
             <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
           </type>

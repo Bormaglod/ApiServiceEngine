@@ -205,11 +205,11 @@
         <configurationElementShapeMoniker Id="0272100d-e02e-489d-a289-c0b187321431" />
       </nodes>
     </configurationElementCollectionHasItemTypeConnector>
-    <configurationElementShape Id="8ec79943-2a10-4c00-a07e-ef3f8b973027" absoluteBounds="7.75, 5.625, 1.5, 1.5956835937499996" outlineDashStyle="Solid" outlineThickness="0.01">
+    <configurationElementShape Id="8ec79943-2a10-4c00-a07e-ef3f8b973027" absoluteBounds="7.75, 5.625, 1.5, 1.4033821614583326" outlineDashStyle="Solid" outlineThickness="0.01">
       <configurationElementMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Recive" />
       <nestedChildShapes>
-        <elementListCompartment Id="e14c59c1-bf01-4bf5-b43e-1807473aacd5" absoluteBounds="7.765, 6.035, 1.4700000000000002, 0.8262939453125" name="AttributeProperties" titleTextColor="Black" itemTextColor="Black" />
-        <elementListCompartment Id="3217df29-17f8-4c2e-978a-5b18e4c896e2" absoluteBounds="7.765, 6.8712939453125, 1.4700000000000002, 0.2493896484375" name="ElementProperties" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="e14c59c1-bf01-4bf5-b43e-1807473aacd5" absoluteBounds="7.765, 6.035, 1.4700000000000002, 0.63399251302083326" name="AttributeProperties" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="3217df29-17f8-4c2e-978a-5b18e4c896e2" absoluteBounds="7.765, 6.678992513020833, 1.4700000000000002, 0.2493896484375" name="ElementProperties" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </configurationElementShape>
   </nestedChildShapes>

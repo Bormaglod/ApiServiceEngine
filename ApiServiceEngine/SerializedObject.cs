@@ -10,8 +10,7 @@
     using System.Runtime.Serialization.Json;
     using System.Text;
     using ApiServiceEngine.Configuration;
-    using Inflector;
-
+    
     [DataContract]
     class SerializedObject
     {
@@ -20,12 +19,13 @@
             Type type = GetType();
             foreach (Parameter p in method.In)
             {
-                if (!parameters.ContainsKey(p.Name))
-                    continue;
+                PropertyInfo prop = type.GetProperty(p.Name, StringComparison.CurrentCultureIgnoreCase);
+                string pName = p.Name.ToLower();
 
-                PropertyInfo prop = type.GetProperty(Inflector.Pascalize(p.ApiName));
                 if (prop == null)
+                {
                     continue;
+                }
 
                 if (p.IsList)
                 {
@@ -34,52 +34,96 @@
                         Type t = prop.PropertyType.GetElementType();
                         Array array;
 
-                        if (string.IsNullOrEmpty(p.Recive.Template))
+                        if (parameters.ContainsKey(pName))
                         {
-                            // шаблон не установлен, данные списка берем из параметров командной строки
-                            string[] list = parameters[p.Name].Split(new char[] { ',' });
+                            string[] list = parameters[pName].Split(new char[] { ',' });
                             array = Array.CreateInstance(t, list.Length);
                             for (int i = 0; i < list.Length; i++)
                             {
-                                object obj = Convert.ChangeType(list[i], t);
-                                array.SetValue(obj, i);
+                                try
+                                {
+                                    object obj = Convert.ChangeType(list[i].Trim(), t);
+                                    array.SetValue(obj, i);
+                                }
+                                catch (Exception)
+                                {
+                                    LogHelper.Logger.Error($"В параметре командной строки {pName} указаны некорректные данные.");
+                                    continue;
+                                }
                             }
                         }
                         else
                         {
-                            if (parameters[p.Name] != p.Recive.Template)
-                                continue;
-
-                            // если шаблон установлен и равен соответствующему параметру командной строки,
-                            // то выполним указанные метод
-                            (object Info, HttpStatusCode Status) = api.ExecuteMethod(p.Recive.Method, parameters);
-
-                            if (Info == null)
-                                continue;
-
-                            // если метод выполнился нормально и вернул какие-то данные, то...
-                            Type infoType = Info.GetType();
-                            if (!infoType.IsGenericType)
-                                continue;
-
-                            IList list = (IList)Info;
-                            if (list.Count == 0)
-                                continue;
-
-                            array = Array.CreateInstance(t, list.Count);
-                            for (int i = 0; i < array.Length; i++)
+                            if (!string.IsNullOrEmpty(p.Recive.Method))
                             {
-                                object obj = list[i];
-                                array.SetValue(obj.GetType().GetProperty(p.Recive.Parameter).GetValue(obj), i);
+                                (object Info, HttpStatusCode Status) = api.ExecuteWebMethod(p.Recive.Method, parameters);
+                                if (Info == null)
+                                {
+                                    LogHelper.Logger.Error($"При попытке получить значение параметра {p.Name} в методе {method.Name} был вызван отсутствующий метод {p.Recive.Method}.");
+                                    continue;
+                                }
+
+                                // если метод выполнился нормально и вернул какие-то данные, то...
+                                Type infoType = Info.GetType();
+                                if (!infoType.IsGenericType)
+                                {
+                                    LogHelper.Logger.Error($"При получении параметра {p.Name} в методе {method.Name} был вызван метод {p.Recive.Method} который вернул некорректное значение.");
+                                    continue;
+                                }
+
+                                IList list = (IList)Info;
+                                if (list.Count == 0)
+                                    continue;
+
+                                PropertyInfo pInfo = list[0].GetType().GetProperty(p.Recive.Parameter);
+                                if (pInfo == null)
+                                {
+                                    LogHelper.Logger.Error($"При попытке получить значение параметра {p.Name} в методе {method.Name} был вызван метод {p.Recive.Method} с отсутствующим параметром {p.Recive.Parameter}.");
+                                    continue;
+                                }
+
+                                array = Array.CreateInstance(t, list.Count);
+                                for (int i = 0; i < array.Length; i++)
+                                {
+                                    object obj = list[i];
+                                    array.SetValue(pInfo.GetValue(obj), i);
+                                }
+
+                                prop.SetValue(this, array);
                             }
                         }
-
-                        prop.SetValue(this, array);
                     }
                 }
                 else
                 {
-                    object obj = Convert.ChangeType(parameters[p.Name], prop.PropertyType);
+                    object obj = null;
+                    if (parameters.ContainsKey(pName))
+                    {
+                        obj = Convert.ChangeType(parameters[pName], prop.PropertyType);
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(p.Recive.Method))
+                        {
+                            try
+                            {
+                                obj = api.GetPropertyFromMethod(p.Recive.Method, p.Recive.Parameter, parameters);
+                            }
+                            catch (ExecuteMethodException)
+                            {
+                                LogHelper.Logger.Error($"При попытке получить значение параметра {p.Name} в методе {method.Name} был вызван отсутствующий метод {p.Recive.Method}.");
+                                continue;
+                            }
+                            catch (UnknownPropertyException)
+                            {
+                                LogHelper.Logger.Error($"При попытке получить значение параметра {p.Name} в методе {method.Name} был вызван метод {p.Recive.Method} с отсутствующим параметром {p.Recive.Parameter}.");
+                                continue;
+                            }
+
+                            parameters.Add(pName, obj.ToString());
+                        }
+                    }
+
                     prop.SetValue(this, obj);
                 }
             }

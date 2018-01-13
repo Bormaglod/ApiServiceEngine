@@ -3,24 +3,22 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.Specialized;
-    using System.IO;
     using System.Linq;
-    using System.Net;
     using System.Runtime.Serialization;
-    using System.Runtime.Serialization.Json;
     using System.Text;
     using ApiServiceEngine.Configuration;
     using FirebirdSql.Data.FirebirdClient;
 
     class RosneftAPI : ServiceAPI
     {
-        #region InfoCard
+        #region InfoCardContract
 
         [DataContract]
+        [MethodData(Name = "InfoCardContract")]
         class InfoCard
         {
-            [DataMember]
-            public int SubjID { get; set; }
+            [DataMember(Name = "SubjID")]
+            public int ContractID { get; set; }
 
             [DataMember]
             public string ContractNum { get; set; }
@@ -31,31 +29,33 @@
 
         #endregion
 
-        #region Goods
+        #region InfoGoodsList
 
         [DataContract]
         class Goods
         {
-            [DataMember]
-            public int Id { get; set; }
+            [DataMember(Name = "Id")]
+            public int GoodsId { get; set; }
 
             [DataMember]
             public string Name { get; set; }
 
-            [DataMember]
-            public string FName { get; set; }
+            [DataMember(Name = "FName")]
+            public string FullName { get; set; }
         }
 
         [DataContract]
+        [MethodData(Name = "InfoGoodsList")]
         class InfoGoods
         {
             [DataMember]
+            [ReturningValue]
             public List<Goods> GoodsList { get; set; }
         }
 
         #endregion
-        
-        #region Operation
+
+        #region InfoCardOperation
 
         [DataContract]
         class Operation
@@ -78,8 +78,8 @@
             [DataMember]
             public decimal OperPrice { get; set; }
 
-            [DataMember]
-            public int SubjID { get; set; }
+            [DataMember(Name = "SubjID")]
+            public int ContractID { get; set; }
 
             [DataMember]
             public string PosAddress { get; set; }
@@ -101,15 +101,17 @@
         }
 
         [DataContract]
+        [MethodData(Name = "InfoCardOperation")]
         class Operations
         {
             [DataMember]
+            [ReturningValue]
             public List<Operation> OperationList { get; set; }
         }
 
         #endregion
 
-        #region OperationDisc
+        #region InfoCardOperationDisc
 
         [DataContract]
         class OperationDisc : Operation
@@ -122,9 +124,11 @@
         }
 
         [DataContract]
+        [MethodData(Name = "InfoCardOperationDisc")]
         class OperationsDisc
         {
             [DataMember]
+            [ReturningValue]
             public List<OperationDisc> OperationList { get; set; }
         }
 
@@ -138,8 +142,8 @@
             [DataMember]
             public decimal CardID { get; set; }
 
-            [DataMember]
-            public decimal SubjSaldo { get; set; }
+            [DataMember(Name = "SubjSaldo")]
+            public decimal ContractSaldo { get; set; }
 
             [DataMember]
             public decimal CardSaldo { get; set; }
@@ -149,15 +153,17 @@
         }
 
         [DataContract]
+        [MethodData(Name = "InfoCardAccountSaldo")]
         class CardAccounts
         {
             [DataMember]
+            [ReturningValue]
             public List<CardAccount> CardAccountList { get; set; }
         }
 
         #endregion
 
-        #region Card
+        #region InfoContractCardList
 
         [DataContract]
         class Card
@@ -176,15 +182,17 @@
         }
 
         [DataContract]
+        [MethodData(Name = "InfoContractCardList")]
         class CardList
         {
             [DataMember]
+            [ReturningValue]
             public List<Card> Cards { get; set; }
         }
 
         #endregion
 
-        #region ContractGoods
+        #region InfoContractAccountSaldo
 
         [DataContract]
         class ContractGoods
@@ -203,24 +211,26 @@
         }
 
         [DataContract]
+        [MethodData(Name = "InfoContractAccountSaldo")]
         class ContractGoodsList
         {
             [DataMember]
+            [ReturningValue]
             public List<ContractGoods> ContractGoods { get; set; }
         }
 
         #endregion
 
-        #region Limit
+        #region InfoCardLimitSum
 
         [DataContract]
         class Limit
         {
-            [DataMember]
-            public decimal Card { get; set; }
+            [DataMember(Name = "ID")]
+            public decimal CardID { get; set; }
 
-            [DataMember]
-            public int Err { get; set; }
+            [DataMember(Name = "Err")]
+            public int ErrorCode { get; set; }
 
             [DataMember]
             public decimal Daily { get; set; }
@@ -236,33 +246,17 @@
         }
 
         [DataContract]
+        [MethodData(Name = "InfoCardLimitSum")]
         class LimitList
         {
             [DataMember]
+            [ReturningValue]
             public List<Limit> Limit { get; set; }
         }
 
-        [DataContract]
-        class LimitListRequest : SerializedObject
-        {
-            public LimitListRequest(ServiceAPI api, Service service, Method method, StringDictionary parameters) : base(api, service, method, parameters)
-            {
-                User = service.Settings.Login;
-                Password = service.Settings.Password;
-            }
+        #endregion
 
-            [DataMember]
-            public string User { get; set; }
-
-            [DataMember]
-            public string Password { get; set; }
-
-            [DataMember]
-            public int SubjID { get; set; }
-
-            [DataMember]
-            public decimal[] CardList { get; set; }
-        }
+        #region InfoCardLimitOffline
 
         [DataContract]
         class GoodsLimitItem
@@ -270,8 +264,8 @@
             [DataMember(Name = "ID")]
             public int GoodsID { get; set; }
 
-            [DataMember]
-            public string Name { get; set; }
+            [DataMember(Name = "Name")]
+            public string GoodsName { get; set; }
 
             [DataMember]
             public string Unit { get; set; }
@@ -328,214 +322,139 @@
         }
 
         [DataContract]
+        [MethodData(Name = "InfoCardLimitOffline")]
         class LimitListOffline
         {
             [DataMember]
+            [ReturningValue]
             public List<LimitOffline> Card { get; set; }
         }
 
         #endregion
 
+        [DataContract]
+        [MethodData(Name = "InfoCardLimitSum")]
+        [MethodData(Name = "InfoCardLimitOffline")]
+        class LimitListRequest : SerializedObject
+        {
+            public LimitListRequest(ServiceAPI api, Service service, Method method, StringDictionary parameters) : base(api, service, method, parameters)
+            {
+                User = service.Settings.Login;
+                Password = service.Settings.Password;
+            }
+
+            [DataMember]
+            public string User { get; set; }
+
+            [DataMember]
+            public string Password { get; set; }
+
+            [DataMember(Name = "SubjID")]
+            public int? ContractID { get; set; }
+
+            [DataMember]
+            public decimal[] CardList { get; set; }
+        }
+
         public RosneftAPI(Service config, FbConnection connection, FbTransaction transaction) : base(config, connection, transaction)
         {
         }
 
-        public (object Info, HttpStatusCode Status) InfoCardContract(Method method, StringDictionary parameters, bool writeToDatabase)
+        public object InfoCardContract(Method method, StringDictionary parameters, object info)
         {
-            HttpWebResponse response = GetResponse(method, parameters);
-            if (response == null)
-                return (null, HttpStatusCode.BadRequest);
-
-            if (response.StatusCode != HttpStatusCode.OK)
-                return (null, response.StatusCode);
-
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(InfoCard));
-            InfoCard info = (InfoCard)serializer.ReadObject(response.GetResponseStream());
-            if (writeToDatabase)
-                ExecuteProcedure(method.Name, parameters, info);
-
-            return (info, response.StatusCode);
+            ExecuteProcedure(method.Name, parameters, info);
+            return info;
         }
 
-        public (object Info, HttpStatusCode Status) InfoGoodsList(Method method, StringDictionary parameters, bool writeToDatabase)
+        public object InfoGoodsList(Method method, StringDictionary parameters, object info)
         {
-            HttpWebResponse response = GetResponse(method, parameters);
-            if (response == null)
-                return (null, HttpStatusCode.BadRequest);
-
-            if (response.StatusCode != HttpStatusCode.OK)
-                return (null, response.StatusCode);
-
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(InfoGoods));
-            InfoGoods info = (InfoGoods)serializer.ReadObject(response.GetResponseStream());
-            if (writeToDatabase)
+            List<Goods> infoGoods = (List<Goods>)info;
+            foreach (Goods goods in infoGoods)
             {
-                foreach (Goods g in info.GoodsList)
+                ExecuteProcedure(method.Name, parameters, goods);
+            }
+
+            return infoGoods;
+        }
+
+        public object InfoCardOperation(Method method, StringDictionary parameters, object info)
+        {
+            List<Operation> infoOperations = (List<Operation>)info;
+            foreach (Operation op in infoOperations)
+            {
+                ExecuteProcedure(method.Name, parameters, op);
+            }
+
+            return infoOperations;
+        }
+
+        public object InfoCardOperationDisc(Method method, StringDictionary parameters, object info)
+        {
+            List<OperationDisc> infoOperations = (List<OperationDisc>)info;
+            foreach (OperationDisc op in infoOperations)
+            {
+                ExecuteProcedure(method.Name, parameters, op);
+            }
+
+            return infoOperations;
+        }
+
+        public object InfoCardAccountSaldo(Method method, StringDictionary parameters, object info)
+        {
+            List<CardAccount> infoCard = (List<CardAccount>)info;
+            foreach (CardAccount ca in infoCard)
+            {
+                ExecuteProcedure(method.Name, parameters, ca);
+            }
+
+            return infoCard;
+        }
+
+        public object InfoContractCardList(Method method, StringDictionary parameters, object info)
+        {
+            List<Card> infoCards = (List<Card>)info;
+            foreach (Card card in infoCards)
+            {
+                ExecuteProcedure(method.Name, parameters, card);
+            }
+
+            return infoCards;
+        }
+
+        public object InfoContractAccountSaldo(Method method, StringDictionary parameters, object info)
+        {
+            List<ContractGoods> infoGoods = (List<ContractGoods>)info;
+            foreach (ContractGoods c in infoGoods)
+            {
+                ExecuteProcedure(method.Name, parameters, c);
+            }
+
+            return infoGoods;
+        }
+
+        public object InfoCardLimitSum(Method method, StringDictionary parameters, object info)
+        {
+            List<Limit> infoLimit = (List<Limit>)info;
+            foreach (Limit limit in infoLimit)
+            {
+                ExecuteProcedure(method.Name, parameters, limit);
+            }
+
+            return infoLimit;
+        }
+
+        public object InfoCardLimitOffline(Method method, StringDictionary parameters, object info)
+        {
+            List<LimitOffline> infoLimit = (List<LimitOffline>)info;
+            foreach (LimitOffline limit in infoLimit)
+            {
+                foreach (GoodsLimitItem item in limit.Goods.Item)
                 {
-                    ExecuteProcedure(method.Name, parameters, g);
+                    ExecuteProcedure(method.Name, parameters, limit, item);
                 }
             }
 
-            return (info.GoodsList, response.StatusCode);
-        }
-
-        public (object Info, HttpStatusCode Status) InfoCardOperation(Method method, StringDictionary parameters, bool writeToDatabase)
-        {
-            HttpWebResponse response = GetResponse(method, parameters);
-            if (response == null)
-                return (null, HttpStatusCode.BadRequest);
-
-            if (response.StatusCode != HttpStatusCode.OK)
-                return (null, response.StatusCode);
-
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Operations));
-            Operations info = (Operations)serializer.ReadObject(response.GetResponseStream());
-            if (writeToDatabase)
-            {
-                foreach (Operation op in info.OperationList)
-                {
-                    ExecuteProcedure(method.Name, parameters, op);
-                }
-            }
-
-            return (info.OperationList, response.StatusCode);
-        }
-
-        public (object Info, HttpStatusCode Status) InfoCardOperationDisc(Method method, StringDictionary parameters, bool writeToDatabase)
-        {
-            HttpWebResponse response = GetResponse(method, parameters);
-            if (response == null)
-                return (null, HttpStatusCode.BadRequest);
-
-            if (response.StatusCode != HttpStatusCode.OK)
-                return (null, response.StatusCode);
-
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(OperationsDisc));
-            OperationsDisc info = (OperationsDisc)serializer.ReadObject(response.GetResponseStream());
-            if (writeToDatabase)
-            {
-                foreach (OperationDisc op in info.OperationList)
-                {
-                    ExecuteProcedure(method.Name, parameters, op);
-                }
-            }
-
-            return (info.OperationList, response.StatusCode);
-        }
-
-        public (object Info, HttpStatusCode Status) InfoCardAccountSaldo(Method method, StringDictionary parameters, bool writeToDatabase)
-        {
-            HttpWebResponse response = GetResponse(method, parameters);
-            if (response == null)
-                return (null, HttpStatusCode.BadRequest);
-
-            if (response.StatusCode != HttpStatusCode.OK)
-                return (null, response.StatusCode);
-
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(CardAccounts));
-            CardAccounts info = (CardAccounts)serializer.ReadObject(response.GetResponseStream());
-            if (writeToDatabase)
-            {
-                foreach (CardAccount ca in info.CardAccountList)
-                {
-                    ExecuteProcedure(method.Name, parameters, ca);
-                }
-            }
-
-            return (info.CardAccountList, response.StatusCode);
-        }
-
-        public (object Info, HttpStatusCode Status) InfoContractCardList(Method method, StringDictionary parameters, bool writeToDatabase)
-        {
-            HttpWebResponse response = GetResponse(method, parameters);
-            if (response == null)
-                return (null, HttpStatusCode.BadRequest);
-
-            if (response.StatusCode != HttpStatusCode.OK)
-                return (null, response.StatusCode);
-
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(CardList));
-            CardList info = (CardList)serializer.ReadObject(response.GetResponseStream());
-            if (writeToDatabase)
-            {
-                foreach (Card c in info.Cards)
-                {
-                    ExecuteProcedure(method.Name, parameters, c);
-                }
-            }
-
-            return (info.Cards, response.StatusCode);
-        }
-
-        public (object Info, HttpStatusCode Status) InfoContractAccountSaldo(Method method, StringDictionary parameters, bool writeToDatabase)
-        {
-            HttpWebResponse response = GetResponse(method, parameters);
-            if (response == null)
-                return (null, HttpStatusCode.BadRequest);
-
-            if (response.StatusCode != HttpStatusCode.OK)
-                return (null, response.StatusCode);
-
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ContractGoodsList));
-            ContractGoodsList info = (ContractGoodsList)serializer.ReadObject(response.GetResponseStream());
-            if (writeToDatabase)
-            {
-                foreach (ContractGoods c in info.ContractGoods)
-                {
-                    ExecuteProcedure(method.Name, parameters, c);
-                }
-            }
-
-            return (info.ContractGoods, response.StatusCode);
-        }
-
-        public (object Info, HttpStatusCode Status) InfoCardLimitSum(Method method, StringDictionary parameters, bool writeToDatabase)
-        {
-            LimitListRequest r = new LimitListRequest(this, Service, method, parameters);
-            HttpWebResponse response = GetResponse(method, r);
-            if (response == null)
-                return (null, HttpStatusCode.BadRequest);
-
-            if (response.StatusCode != HttpStatusCode.OK)
-                return (null, response.StatusCode);
-
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(LimitList));
-            LimitList info = (LimitList)serializer.ReadObject(response.GetResponseStream());
-            if (writeToDatabase)
-            {
-                foreach (Limit l in info.Limit)
-                {
-                    ExecuteProcedure(method.Name, parameters, l);
-                }
-            }
-
-            return (info.Limit, response.StatusCode);
-        }
-
-        public (object Info, HttpStatusCode Status) InfoCardLimitOffline(Method method, StringDictionary parameters, bool writeToDatabase)
-        {
-            LimitListRequest r = new LimitListRequest(this, Service, method, parameters);
-            HttpWebResponse response = GetResponse(method, r);
-            if (response == null)
-                return (null, HttpStatusCode.BadRequest);
-
-            if (response.StatusCode != HttpStatusCode.OK)
-                return (null, response.StatusCode);
-
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(LimitListOffline));
-            LimitListOffline info = (LimitListOffline)serializer.ReadObject(response.GetResponseStream());
-            if (writeToDatabase)
-            {
-                foreach (LimitOffline l in info.Card)
-                {
-                    foreach (GoodsLimitItem item in l.Goods.Item)
-                    {
-                        ExecuteProcedure(method.Name, parameters, l, item);
-                    }
-                }
-            }
-
-            return (info.Card, response.StatusCode);
+            return infoLimit;
         }
 
         protected override string GetBaseUrl(Method method)
@@ -545,16 +464,40 @@
             return $"{Url}/v{version}/{apiName}/";
         }
 
+        bool UpdateParameters(Parameter param, StringDictionary parameters)
+        {
+            string pName = param.Name.ToLower();
+            if (!parameters.ContainsKey(pName))
+            {
+                if (string.IsNullOrEmpty(param.Recive.Method))
+                    return false;
+
+                try
+                {
+                    object obj = GetPropertyFromMethod(param.Recive.Method, param.Recive.Parameter, parameters);
+                    parameters.Add(pName, obj.ToString());
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    LogHelper.Logger.Error(e.Message);
+                }
+            }
+
+            return true;
+        }
+
         override protected string GetParametersUrl(Method method, StringDictionary parameters)
         {
             StringBuilder sb = new StringBuilder();
             
             foreach (Parameter param in method.In.OfType<Parameter>().Where(x => x.IsPage).OrderBy(x => x.Index))
             {
-                if (!parameters.ContainsKey(param.Name))
+                string pName = param.Name.ToLower();
+                if (!UpdateParameters(param, parameters))
                     continue;
 
-                sb.Append($"{parameters[param.Name]}/");
+                sb.Append($"{parameters[pName]}/");
             }
 
 
@@ -566,10 +509,11 @@
 
                 foreach (Parameter param in p)
                 {
-                    if (!parameters.ContainsKey(param.Name))
+                    string pName = param.Name.ToLower();
+                    if (!UpdateParameters(param, parameters))
                         continue;
 
-                    sb.Append($"{param.ApiName}={parameters[param.Name]}&");
+                    sb.Append($"{param.ApiName}={parameters[pName]}&");
                 }
 
                 if (string.IsNullOrWhiteSpace(ep))

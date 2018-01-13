@@ -1,15 +1,16 @@
 ﻿namespace ApiServiceEngine
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.Reflection;
     using System.Linq;
     using System.Net;
+    using System.Runtime.Serialization.Json;
     using System.Text;
     using ApiServiceEngine.Configuration;
     using FirebirdSql.Data.FirebirdClient;
-    using Inflector;
-
+    
     abstract class ServiceAPI
     {
         Service service;
@@ -39,30 +40,103 @@
 
         protected Service Service => service;
 
-        public (object Info, HttpStatusCode Status) ExecuteMethod(string methodName, StringDictionary parameters)
-        {
-            return ExecuteMethod(service.Methods[methodName], parameters);
-        }
-
         public (object Info, HttpStatusCode Status) ExecuteMethod(Method method, StringDictionary parameters)
         {
-            Type type = GetType();
-            MethodInfo methodInfo = type.GetMethod(method.Name, new Type[] { typeof(Method), typeof(StringDictionary), typeof(bool) });
-            if (methodInfo != null)
+            (object Info, HttpStatusCode Status) = ExecuteWebMethod(method, parameters);
+            if (Status == HttpStatusCode.OK)
             {
-                return (ValueTuple<object, HttpStatusCode>)methodInfo.Invoke(this, new object[] { method, parameters, true });
+                Type type = GetType();
+                MethodInfo methodInfo = type.GetMethod(method.Name, StringComparison.CurrentCultureIgnoreCase);
+                if (methodInfo != null)
+                    return (methodInfo.Invoke(this, new object[] { method, parameters, Info }), Status);
             }
 
-            return (null, HttpStatusCode.NotImplemented);
+            return (Info, Status);
         }
 
-        public HttpStatusCode Execute(Method method, StringDictionary parameters)
+        public (object Info, HttpStatusCode Status) ExecuteWebMethod(string methodName, StringDictionary parameters)
         {
-            (object Info, HttpStatusCode Status) = ExecuteMethod(method, parameters);
-            if (Status == HttpStatusCode.NotImplemented)
-                LogHelper.Logger.Error($"Метод {method.Name} еще не реализован (ApiServiceEngine.ServiceAPI.Execute).");
+            return ExecuteWebMethod(service.Methods[methodName], parameters);
+        }
 
-            return Status;
+        public (object Info, HttpStatusCode Status) ExecuteWebMethod(Method method, StringDictionary parameters)
+        {
+            HttpWebResponse response;
+            Type type = GetType();
+            Type typeData = null;
+
+            foreach (Type t in type.GetNestedTypes(BindingFlags.NonPublic))
+            {
+                IEnumerable<MethodDataAttribute> attrs = t.GetCustomAttributes<MethodDataAttribute>();
+                if (attrs.FirstOrDefault(x => string.Compare(x.Name, method.Name, StringComparison.CurrentCultureIgnoreCase) == 0) != null)
+                {
+                    typeData = t;
+                    break;
+                }
+            }
+
+            if (typeData == null)
+                return (null, HttpStatusCode.NotImplemented);
+
+            Type typeRequest = null;
+            if (method.Request == RequestMethod.Post)
+            {
+                foreach (Type t in type.GetNestedTypes(BindingFlags.NonPublic).Where(x => x.BaseType == typeof(SerializedObject)))
+                {
+                    IEnumerable<MethodDataAttribute> attrs = t.GetCustomAttributes<MethodDataAttribute>();
+                    if (attrs.FirstOrDefault(x => string.Compare(x.Name, method.Name, StringComparison.CurrentCultureIgnoreCase) == 0) != null)
+                    {
+                        typeRequest = t;
+                        break;
+                    }
+                }
+
+                if (typeRequest == null)
+                    return (null, HttpStatusCode.NotImplemented);
+
+                SerializedObject p = (SerializedObject)Activator.CreateInstance(typeRequest, new object[] { this, Service, method, parameters });
+                response = GetResponse(method, p);
+            }
+            else
+            {
+                response = GetResponse(method, parameters);
+            }
+
+            if (response == null)
+                return (null, HttpStatusCode.BadRequest);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+                return (null, response.StatusCode);
+
+            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeData);
+            object info = serializer.ReadObject(response.GetResponseStream());
+            foreach (PropertyInfo prop in info.GetType().GetProperties())
+            {
+                if (prop.GetCustomAttribute<ReturningValueAttribute>() != null)
+                {
+                    info = prop.GetValue(info);
+                    break;
+                }
+            }
+
+            return (info, response.StatusCode);
+        }
+
+        public object GetPropertyFromMethod(string method, string param, StringDictionary parameters)
+        {
+            (object Info, HttpStatusCode Status) = ExecuteWebMethod(method, parameters);
+            if (Info == null)
+            {
+                throw new ExecuteMethodException($"Вызов метода {method} произведен неудачно.");
+            }
+
+            PropertyInfo pInfo = Info.GetType().GetProperty(param);
+            if (pInfo == null)
+            {
+                throw new UnknownPropertyException($"Неизвестный параметр {param} метода {method}");
+            }
+
+            return pInfo.GetValue(Info);
         }
 
         protected HttpWebResponse GetResponse(Method method, StringDictionary parameters)
@@ -91,8 +165,12 @@
 
         protected HttpWebResponse GetResponse(Method method, SerializedObject obj)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(GetBaseUrl(method));
-            byte[] data = Encoding.ASCII.GetBytes(obj.Json());
+            string address = GetBaseUrl(method);
+            string json = obj.Json();
+            LogHelper.Logger.Info($"{address} {json}");
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(address);
+            byte[] data = Encoding.ASCII.GetBytes(json);
 
             request.Method = "POST";
             request.ContentType = "application/json";
@@ -163,7 +241,7 @@
 
         FbCommand Prepare(string methodName, StringDictionary parameters, params object[] obj)
         {
-            Method method = service.Methods[methodName];
+            Method method = service.GetMethod(methodName);
 
             FbCommand cmd = new FbCommand(method.Procedure, Connection, Transaction)
             {
@@ -172,10 +250,11 @@
 
             foreach (Parameter p in method.In.OfType<Parameter>().Where(x => !string.IsNullOrEmpty(x.Db.Field)))
             {
-                if (!parameters.ContainsKey(p.Name))
+                string pName = p.Name.ToLower();
+                if (!parameters.ContainsKey(pName))
                     continue;
 
-                cmd.Parameters.Add(p.Db.Field, p.Db.Type, p.Db.Length).Value = parameters[p.Name];
+                cmd.Parameters.Add(p.Db.Field, p.Db.Type, p.Db.Length).Value = parameters[pName];
             }
 
             foreach (Parameter p in method.Out.OfType<Parameter>().Where(x => !string.IsNullOrEmpty(x.Db.Field)))
@@ -183,12 +262,7 @@
                 object o = null;
                 foreach (object item in obj)
                 {
-                    PropertyInfo prop = item.GetType().GetProperty(Inflector.Pascalize(p.ApiName));
-                    if (prop == null)
-                    {
-                        prop = item.GetType().GetProperty(Inflector.Pascalize(p.Name));
-                    }
-
+                    PropertyInfo prop = item.GetType().GetProperty(p.Name, StringComparison.CurrentCultureIgnoreCase);
                     if (prop != null)
                     {
                         o = prop.GetValue(item);
