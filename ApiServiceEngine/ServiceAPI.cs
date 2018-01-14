@@ -54,11 +54,6 @@
             return (Info, Status);
         }
 
-        public (object Info, HttpStatusCode Status) ExecuteWebMethod(string methodName, StringDictionary parameters)
-        {
-            return ExecuteWebMethod(service.Methods[methodName], parameters);
-        }
-
         public (object Info, HttpStatusCode Status) ExecuteWebMethod(Method method, StringDictionary parameters)
         {
             HttpWebResponse response;
@@ -122,15 +117,17 @@
             return (info, response.StatusCode);
         }
 
-        public object GetPropertyFromMethod(string method, string param, StringDictionary parameters)
+        public object GetPropertyFromMethod(string methodName, string param, StringDictionary parameters)
         {
+            Method method = service.GetMethod(methodName);
             (object Info, HttpStatusCode Status) = ExecuteWebMethod(method, parameters);
             if (Info == null)
             {
                 throw new ExecuteMethodException($"Вызов метода {method} произведен неудачно.");
             }
 
-            PropertyInfo pInfo = Info.GetType().GetProperty(param);
+            Parameter parameter = method.Out.GetParameter(param);
+            PropertyInfo pInfo = Info.GetType().GetProperty(parameter);
             if (pInfo == null)
             {
                 throw new UnknownPropertyException($"Неизвестный параметр {param} метода {method}");
@@ -262,7 +259,7 @@
                 object o = null;
                 foreach (object item in obj)
                 {
-                    PropertyInfo prop = item.GetType().GetProperty(p.Name, StringComparison.CurrentCultureIgnoreCase);
+                    PropertyInfo prop = item.GetType().GetProperty(p);
                     if (prop != null)
                     {
                         o = prop.GetValue(item);

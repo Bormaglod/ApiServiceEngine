@@ -19,7 +19,7 @@
             Type type = GetType();
             foreach (Parameter p in method.In)
             {
-                PropertyInfo prop = type.GetProperty(p.Name, StringComparison.CurrentCultureIgnoreCase);
+                PropertyInfo prop = type.GetProperty(p);
                 string pName = p.Name.ToLower();
 
                 if (prop == null)
@@ -56,10 +56,17 @@
                         {
                             if (!string.IsNullOrEmpty(p.Recive.Method))
                             {
-                                (object Info, HttpStatusCode Status) = api.ExecuteWebMethod(p.Recive.Method, parameters);
-                                if (Info == null)
+                                Method reciveMethod = service.GetMethod(p.Recive.Method);
+                                if (reciveMethod == null)
                                 {
                                     LogHelper.Logger.Error($"При попытке получить значение параметра {p.Name} в методе {method.Name} был вызван отсутствующий метод {p.Recive.Method}.");
+                                    continue;
+                                }
+
+                                (object Info, HttpStatusCode Status) = api.ExecuteWebMethod(reciveMethod, parameters);
+                                if (Info == null)
+                                {
+                                    LogHelper.Logger.Error($"При попытке получить значение параметра {p.Name} в метод {method.Name} вернул некорректное значение.");
                                     continue;
                                 }
 
@@ -75,10 +82,17 @@
                                 if (list.Count == 0)
                                     continue;
 
-                                PropertyInfo pInfo = list[0].GetType().GetProperty(p.Recive.Parameter);
-                                if (pInfo == null)
+                                Parameter reciveParam = reciveMethod.In.GetParameter(p.Recive.Parameter);
+                                if (reciveParam == null)
                                 {
                                     LogHelper.Logger.Error($"При попытке получить значение параметра {p.Name} в методе {method.Name} был вызван метод {p.Recive.Method} с отсутствующим параметром {p.Recive.Parameter}.");
+                                    continue;
+                                }
+
+                                PropertyInfo pInfo = list[0].GetType().GetProperty(reciveParam);
+                                if (pInfo == null)
+                                {
+                                    LogHelper.Logger.Error($"При попытке получить значение параметра {p.Name} в методе {method.Name} был вызван метод {p.Recive.Method} с неизвестным параметром {p.Recive.Parameter}.");
                                     continue;
                                 }
 

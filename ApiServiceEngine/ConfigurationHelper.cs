@@ -32,5 +32,15 @@
         {
             return service.Methods.OfType<Method>().FirstOrDefault(x => string.Compare(x.Name, methodNme, StringComparison.CurrentCultureIgnoreCase) == 0);
         }
+
+        public static Parameter GetParameter(this In parameters, string parameterName)
+        {
+            return parameters.OfType<Parameter>().FirstOrDefault(x => string.Compare(x.Name, parameterName, StringComparison.CurrentCultureIgnoreCase) == 0);
+        }
+
+        public static Parameter GetParameter(this Out parameters, string parameterName)
+        {
+            return parameters.OfType<Parameter>().FirstOrDefault(x => string.Compare(x.Name, parameterName, StringComparison.CurrentCultureIgnoreCase) == 0);
+        }
     }
 }
