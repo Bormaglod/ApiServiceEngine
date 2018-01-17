@@ -9,16 +9,26 @@
     using System.Net;
     using FirebirdSql.Data.FirebirdClient;
     using ApiServiceEngine.Configuration;
+    using CommandLine;
 
     class Program
     {
         static void Main(string[] args)
         {
-            LogHelper.Logger.Info("Starting ApiServiveEngine");
+            var options = new Options();
+            Parser.Default.ParseArguments(args, options);
 
+            LogHelper.Logger.Info("Starting ApiServiveEngine");
             if (args.Length == 0)
             {
                 LogHelper.Logger.Info("Запуск ApiServiceEngine без параметров.");
+                Console.WriteLine("Использование: ApiServiceEngine <задача> <параметр 1>, <параметр 2>, ... <параметр N>");
+                Console.WriteLine();
+                Console.WriteLine("  <задача>   имя задачи заданное в конфигурационном файле в секции /configuration/api/tasks");
+                Console.WriteLine("  <параметр> задает один из параметров задачи и имеет вид:");
+                Console.WriteLine("                 --имя_параметра=значение");
+                Console.WriteLine("             имя_параметра - одно из значений заданных в /configuration/api/services/methods/method/in");
+                Console.WriteLine("             значение - соответственно значение этого параметра");
                 return;
             }
 
@@ -45,7 +55,7 @@
                 return;
             }
 
-            FbConnection conn = new FbConnection(GetConnectionString("home"));
+            FbConnection conn = new FbConnection(GetConnectionString("knv3"));
             try
             {
                 conn.Open();
