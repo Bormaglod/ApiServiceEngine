@@ -15,28 +15,19 @@
     {
         static void Main(string[] args)
         {
-            var options = new Options();
-            Parser.Default.ParseArguments(args, options);
-
             LogHelper.Logger.Info("Starting ApiServiveEngine");
-            if (args.Length == 0)
-            {
-                LogHelper.Logger.Info("Запуск ApiServiceEngine без параметров.");
-                Console.WriteLine("Использование: ApiServiceEngine <задача> <параметр 1>, <параметр 2>, ... <параметр N>");
-                Console.WriteLine();
-                Console.WriteLine("  <задача>   имя задачи заданное в конфигурационном файле в секции /configuration/api/tasks");
-                Console.WriteLine("  <параметр> задает один из параметров задачи и имеет вид:");
-                Console.WriteLine("                 --имя_параметра=значение");
-                Console.WriteLine("             имя_параметра - одно из значений заданных в /configuration/api/services/methods/method/in");
-                Console.WriteLine("             значение - соответственно значение этого параметра");
-                return;
-            }
+            Parser.Default.ParseArguments<Options>(args)
+                .WithParsed<Options>(opts => RunOptionsAndReturnExitCode(opts))
+                .WithNotParsed<Options>((errs) => HandleParseError(errs));
+        }
 
+        static void RunOptionsAndReturnExitCode(Options options)
+        {
             // задача на выполнение (заодно проверим правильность конфигурационного файла)
             Task task = null;
             try
             {
-                task = ApiSection.Instance.Tasks[args[0]];
+                task = ApiSection.Instance.Tasks[options.Task];
             }
             catch (ConfigurationErrorsException e)
             {
@@ -51,11 +42,11 @@
 
             if (task == null)
             {
-                LogHelper.Logger.Error($"Задача {args[0]}, заданная в параметрах, не найдена в списке задач (configuration/api/tasks) и не будет выполнена.");
+                LogHelper.Logger.Error($"Задача {options.Task}, заданная в параметрах, не найдена в списке задач (configuration/api/tasks) и не будет выполнена.");
                 return;
             }
 
-            FbConnection conn = new FbConnection(GetConnectionString("knv3"));
+            FbConnection conn = new FbConnection(GetConnectionString(options.Database));
             try
             {
                 conn.Open();
@@ -110,7 +101,7 @@
 
                     LogHelper.Logger.Info($"Выполнение метода {m.Name}.");
 
-                    StringDictionary parameters = LoadParameters(args);
+                    StringDictionary parameters = LoadParameters(options.Parameters);
                     if (parameters != null)
                     {
                         HttpStatusCode statusCode = api.ExecuteMethod(m, parameters).Status;
@@ -121,9 +112,14 @@
             }
             finally
             {
-                 tran.Commit();
-                 conn.Close();
+                tran.Commit();
+                conn.Close();
             }
+        }
+
+        static void HandleParseError(IEnumerable<Error> errs)
+        {
+
         }
 
         static string GetConnectionString(string name)
@@ -169,21 +165,21 @@
             return services;
         }
 
-        static StringDictionary LoadParameters(string[] args)
+        static StringDictionary LoadParameters(IEnumerable<string> args)
         {
             StringDictionary parameters = new StringDictionary();
 
             //список входных параметров
-            for (int i = 1; i < args.Length; i++)
+            foreach (string item in args.Where(x => !string.IsNullOrEmpty(x)))
             {
-                string[] p = args[i].Split('=');
+                string[] p = item.Split('=');
                 if (p.Length != 2)
                 {
-                    LogHelper.Logger.Error($"Параметр {args[i]} имеет неверный формат.");
+                    LogHelper.Logger.Error($"Параметр {item} имеет неверный формат.");
                     return null;
                 }
 
-                parameters.Add(p[0].Substring(2).ToLower().Trim(), p[1].Trim());
+                parameters.Add(p[0].ToLower(), p[1].Trim());
             }
 
             return parameters;
