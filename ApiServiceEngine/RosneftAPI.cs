@@ -97,7 +97,7 @@
             public string OperGuid { get; set; }
 
             [DataMember]
-            public decimal Pos { get; set; }
+            public string Pos { get; set; }
         }
 
         [DataContract]

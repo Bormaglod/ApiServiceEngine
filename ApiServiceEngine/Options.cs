@@ -1,8 +1,9 @@
 ﻿namespace ApiServiceEngine
 {
     using System.Collections.Generic;
+    using System.Collections.Specialized;
+    using System.Linq;
     using CommandLine;
-    using CommandLine.Text;
 
     class Options
     {
@@ -15,11 +16,27 @@
         [Option('d', "database", Default = "default", HelpText = "Имя базы данных (список перечислен в конфигурационном файле в секции /configuration/connectionStrings")]
         public string Database { get; set; }
 
-        /*[HelpOption]
-        public string GetUsage()
+        public StringDictionary ParamDictionary
         {
-            return HelpText.AutoBuild(this,
-              (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
-        }*/
+            get
+            {
+                StringDictionary parameters = new StringDictionary();
+
+                //список входных параметров
+                foreach (string item in Parameters.Where(x => !string.IsNullOrEmpty(x)))
+                {
+                    string[] p = item.Split('=');
+                    if (p.Length != 2)
+                    {
+                        LogHelper.Logger.Error($"Параметр {item} имеет неверный формат.");
+                        return null;
+                    }
+
+                    parameters.Add(p[0].ToLower(), p[1].Trim());
+                }
+
+                return parameters;
+            }
+        }
     }
 }

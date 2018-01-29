@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.Specialized;
     using System.Configuration;
     using System.Linq;
     using System.Reflection;
@@ -15,7 +14,6 @@
     {
         static void Main(string[] args)
         {
-            LogHelper.Logger.Info("Starting ApiServiveEngine");
             Parser.Default.ParseArguments<Options>(args)
                 .WithParsed<Options>(opts => RunOptionsAndReturnExitCode(opts))
                 .WithNotParsed<Options>((errs) => HandleParseError(errs));
@@ -23,6 +21,9 @@
 
         static void RunOptionsAndReturnExitCode(Options options)
         {
+            string s = new string('=', 30);
+            LogHelper.Logger.Info($"{s} Start of ApiServiveEngine execution {s}");
+
             // задача на выполнение (заодно проверим правильность конфигурационного файла)
             Task task = null;
             try
@@ -101,19 +102,16 @@
 
                     LogHelper.Logger.Info($"Выполнение метода {m.Name}.");
 
-                    StringDictionary parameters = LoadParameters(options.Parameters);
-                    if (parameters != null)
-                    {
-                        HttpStatusCode statusCode = api.ExecuteMethod(m, parameters).Status;
-                        if (statusCode != HttpStatusCode.OK)
-                            LogHelper.Logger.Error($"Вызов метода {m.Name} вернул код ошибки {statusCode}.");
-                    }
+                    HttpStatusCode statusCode = api.ExecuteMethod(m, options.ParamDictionary).Status;
+                    if (statusCode != HttpStatusCode.OK)
+                        LogHelper.Logger.Error($"Вызов метода {m.Name} вернул код ошибки {statusCode}.");
                 }
             }
             finally
             {
                 tran.Commit();
                 conn.Close();
+                LogHelper.Logger.Info($"{s} End of ApiServiveEngine execution {s}");
             }
         }
 
@@ -163,26 +161,6 @@
             }
 
             return services;
-        }
-
-        static StringDictionary LoadParameters(IEnumerable<string> args)
-        {
-            StringDictionary parameters = new StringDictionary();
-
-            //список входных параметров
-            foreach (string item in args.Where(x => !string.IsNullOrEmpty(x)))
-            {
-                string[] p = item.Split('=');
-                if (p.Length != 2)
-                {
-                    LogHelper.Logger.Error($"Параметр {item} имеет неверный формат.");
-                    return null;
-                }
-
-                parameters.Add(p[0].ToLower(), p[1].Trim());
-            }
-
-            return parameters;
         }
     }
 }
