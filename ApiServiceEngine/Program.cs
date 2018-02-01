@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
-    using System.Reflection;
     using System.Net;
     using FirebirdSql.Data.FirebirdClient;
     using ApiServiceEngine.Configuration;
@@ -15,8 +14,8 @@
         static void Main(string[] args)
         {
             Parser.Default.ParseArguments<Options>(args)
-                .WithParsed<Options>(opts => RunOptionsAndReturnExitCode(opts))
-                .WithNotParsed<Options>((errs) => HandleParseError(errs));
+                .WithParsed(opts => RunOptionsAndReturnExitCode(opts))
+                .WithNotParsed((errs) => HandleParseError(errs));
         }
 
         static void RunOptionsAndReturnExitCode(Options options)
@@ -118,7 +117,7 @@
 
                         LogHelper.Logger.Info($"Выполнение метода {m.Name}.");
 
-                        HttpStatusCode statusCode = api.ExecuteMethod(m, options.ParamDictionary).Status;
+                        HttpStatusCode statusCode = api.ExecuteMethod(m, options.GetParamDictionary()).Status;
                         if (statusCode != HttpStatusCode.OK)
                             LogHelper.Logger.Error($"Вызов метода {m.Name} вернул код ошибки {statusCode}.");
                     }
@@ -128,7 +127,7 @@
             {
                 tran.Commit();
                 conn.Close();
-                LogHelper.Logger.Info($"{s} End of ApiServiveEngine execution {s}");
+                LogHelper.Logger.Info($"{s}= End of ApiServiveEngine execution ={s}");
             }
         }
 

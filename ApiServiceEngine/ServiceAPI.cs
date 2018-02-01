@@ -9,6 +9,7 @@
     using System.Linq;
     using System.Net;
     using System.Text;
+    using System.Text.RegularExpressions;
     using ApiServiceEngine.Configuration;
     using FirebirdSql.Data.FirebirdClient;
     using Newtonsoft.Json;
@@ -51,46 +52,9 @@
 
         public (List<Dictionary<Parameter, object>> Info, HttpStatusCode Status) ExecuteWebMethod(Method method, StringDictionary parameters)
         {
-            HttpWebResponse response;
-            /*Type type = GetType();
-            Type typeData = null;*/
-
-            /*foreach (Type t in type.GetNestedTypes(BindingFlags.NonPublic))
-            {
-                IEnumerable<MethodDataAttribute> attrs = t.GetCustomAttributes<MethodDataAttribute>();
-                if (attrs.FirstOrDefault(x => string.Compare(x.Name, method.Name, StringComparison.CurrentCultureIgnoreCase) == 0) != null)
-                {
-                    typeData = t;
-                    break;
-                }
-            }
-
-            if (typeData == null)
-                return (null, HttpStatusCode.NotImplemented);
-
-            Type typeRequest = null;*/
-            if (method.Request == RequestMethod.Post)
-            {
-                /*foreach (Type t in type.GetNestedTypes(BindingFlags.NonPublic).Where(x => x.BaseType == typeof(SerializedObject)))
-                {
-                    IEnumerable<MethodDataAttribute> attrs = t.GetCustomAttributes<MethodDataAttribute>();
-                    if (attrs.FirstOrDefault(x => string.Compare(x.Name, method.Name, StringComparison.CurrentCultureIgnoreCase) == 0) != null)
-                    {
-                        typeRequest = t;
-                        break;
-                    }
-                }
-
-                if (typeRequest == null)
-                    return (null, HttpStatusCode.NotImplemented);
-
-                SerializedObject p = (SerializedObject)Activator.CreateInstance(typeRequest, new object[] { this, Service, method, parameters });*/
-                response = GetResponse(method, null, parameters);
-            }
-            else
-            {
-                response = GetResponse(method, parameters);
-            }
+            HttpWebResponse response = method.Request == RequestMethod.Post ? 
+                PostResponse(method, parameters) : 
+                GetResponse(method, parameters);
 
             if (response == null)
                 return (null, HttpStatusCode.BadRequest);
@@ -125,12 +89,13 @@
 
         private HttpWebResponse GetResponse(Method method, StringDictionary parameters)
         {
-            string address = GetUrl(method, parameters);
-            LogHelper.Logger.Info(address);
-
-            HttpWebRequest http = (HttpWebRequest)WebRequest.Create(address);
             try
             {
+                string address = MacroResult(method, parameters, method.Request == RequestMethod.Get ? service.Settings.Get.Url : service.Settings.Post.Url);
+            
+                LogHelper.Logger.Info(address);
+
+                HttpWebRequest http = (HttpWebRequest)WebRequest.Create(address);
                 HttpWebResponse response = (HttpWebResponse)http.GetResponse();
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
@@ -147,13 +112,20 @@
             return null;
         }
 
-        private HttpWebResponse GetResponse(Method method, Dictionary<string, object> obj, StringDictionary parameters)
+        private HttpWebResponse PostResponse(Method method, StringDictionary parameters)
         {
             Dictionary<string, object> content = new Dictionary<string, object>();
             foreach (Content item in service.Settings.Post.Contents)
             {
-                string value = GetMacroUrl(method, parameters, item.Value);
-                content.Add(item.Name, value);
+                try
+                {
+                    string value = MacroResult(method, parameters, item.Value);
+                    content.Add(item.Name, value);
+                }
+                catch (Exception e)
+                {
+                    LogHelper.Logger.Error(e.Message);
+                }
             }
 
             foreach (Parameter item in method.In)
@@ -176,23 +148,32 @@
                 }
             }
 
-            string address = GetUrl(method, parameters);
-            string json = JsonConvert.SerializeObject(content);
-            LogHelper.Logger.Info($"{address} {json}");
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(address);
-            byte[] data = Encoding.ASCII.GetBytes(json);
-
-            request.Method = "POST";
-            request.ContentType = "application/json";
-            request.ContentLength = data.Length;
-
-            using (var stream = request.GetRequestStream())
+            try
             {
-                stream.Write(data, 0, data.Length);
+                string address = MacroResult(method, parameters, method.Request == RequestMethod.Get ? service.Settings.Get.Url : service.Settings.Post.Url);
+                string json = JsonConvert.SerializeObject(content);
+                LogHelper.Logger.Info($"{address} {json}");
+
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(address);
+                byte[] data = Encoding.ASCII.GetBytes(json);
+
+                request.Method = "POST";
+                request.ContentType = "application/json";
+                request.ContentLength = data.Length;
+
+                using (var stream = request.GetRequestStream())
+                {
+                    stream.Write(data, 0, data.Length);
+                }
+
+                return (HttpWebResponse)request.GetResponse();
+            }
+            catch (Exception e)
+            {
+                LogHelper.Logger.Error(e.Message);
             }
 
-            return (HttpWebResponse)request.GetResponse();
+            return null;
         }
 
         private string Sql(FbCommand cmd)
@@ -382,7 +363,8 @@
         {
             StringBuilder sb = new StringBuilder();
 
-            foreach (Parameter param in method.In.OfType<Parameter>().Where(x => x.IsPage).OrderBy(x => x.Index))
+            IEnumerable<Parameter> p = method.In.OfType<Parameter>().Where(x => x.IsPage).OrderBy(x => x.Index);
+            foreach (Parameter param in p)
             {
                 string pName = param.Name.ToLower();
                 /*if (!UpdateParameters(param, parameters))
@@ -425,9 +407,7 @@
                 /*if (!UpdateParameters(param, parameters))
                     continue;*/
 
-                if (parameters.ContainsKey(pName))
-                    sb.Append($"{param.GetApiName()}={parameters[pName]}&");
-                else
+                if (!parameters.ContainsKey(pName))
                 {
                     if (param.Required)
                     {
@@ -443,6 +423,8 @@
                             LogHelper.Logger.Error($"Не указан параметр {pName}. Укажите его в аргументах командной строки.");
                     }
                 }
+                else
+                    sb.Append($"{param.GetApiName()}={parameters[pName]}&");
             }
 
             if (sb.Length > 0)
@@ -451,114 +433,42 @@
             return sb.ToString();
         }
 
-        private string GetMacro(Method method, StringDictionary parameters, string name)
+        private string MacroResult(Method method, StringDictionary parameters, string inputText)
         {
-            if (name.ToLower() == "version")
+            var macro = new Dictionary<string, Func<object>>()
             {
-                int version = method.Version == 0 ? 2 : method.Version;
-                return version.ToString();
-            }
-            else if (name.ToLower() == "method_name")
-            {
-                return string.IsNullOrEmpty(method.ApiName) ? method.Name : method.ApiName;
-            }
-            else if (name.ToLower() == "pages")
-            {
-                return GetPagesUrl(method, parameters);
-            }
-            else if (name.ToLower() == "parameters")
-            {
-                return GetParametersUrl(method, parameters);
-            }
-            else if (name.ToLower() == "login")
-            {
-                return account.Login;
-            }
-            else if (name.ToLower() == "password")
-            {
-                return account.Password;
-            }
+                { "version", () => method.Version == 0 ? 2 : method.Version },
+                { "method_name",    () => string.IsNullOrEmpty(method.ApiName) ? method.Name : method.ApiName },
+                { "pages", () => GetPagesUrl(method, parameters) },
+                { "parameters", () => GetParametersUrl(method, parameters) },
+                { "login", () => account.Login },
+                { "password", () => account.Password }
+            };
 
-            return string.Empty;
-        }
-
-        // TODO: Regex
-        private string GetMacroUrl(Method method, StringDictionary parameters, string text)
-        {
-            int idx;
-            StringBuilder builder = new StringBuilder();
-            bool isEmpty = true;
-
-            do
-            {
-                idx = text.IndexOf('{');
-                if (idx >= 0)
+            string pattern = @"\[(?<p1>.*?(?<p2>{(?<p3>(?<={).+?(?=}))}).*?)\]|{(?<m>(?<={).+?(?=}))}";
+            string text = Regex.Replace(inputText, pattern,
+                (m) =>
                 {
-                    builder.Append(text.Substring(0, idx));
-
-                    int idx2 = text.IndexOf('}');
-                    if (idx2 >= 0)
+                    string name = m.Groups["m"].Value.ToLower();
+                    if (macro.ContainsKey(name))
                     {
-                        string name = text.Substring(idx + 1, idx2 - idx - 1);
-                        string macro = GetMacro(method, parameters, name);
-                        if (!string.IsNullOrEmpty(macro))
-                        {
-                            builder.Append(macro);
-                            isEmpty = false;
-                        }
-                    }
-                    else
-                    {
-                        builder.Append(text.Substring(idx + 1));
-                        break;
+                        return macro[name]().ToString();
                     }
 
-                    text = text.Substring(idx2 + 1);
-                }
-
-            } while (idx >= 0);
-
-            return isEmpty ? string.Empty : builder.ToString() + text;
-        }
-
-        private string GetUrl(Method method, StringDictionary parameters)
-        {
-            int idx;
-            string url;
-            if (method.Request == RequestMethod.Get)
-                url = service.Settings.Get.Url;
-            else
-                url = service.Settings.Post.Url;
-
-            StringBuilder builder = new StringBuilder();
-
-            do
-            {
-                idx = url.IndexOf('[');
-                if (idx >= 0)
-                {
-                    builder.Append(url.Substring(0, idx));
-
-                    int idx2 = url.IndexOf(']');
-                    if (idx2 >= 0)
+                    name = m.Groups["p3"].Value.ToLower();
+                    if (macro.ContainsKey(name))
                     {
-                        string macro = url.Substring(idx + 1, idx2 - idx - 1);
-                        builder.Append(GetMacroUrl(method, parameters, macro));
-                    }
-                    else
-                    {
-                        builder.Append(url.Substring(idx + 1));
-                        break;
+                        string res = macro[name]().ToString();
+                        if (string.IsNullOrEmpty(res))
+                            return res;
+
+                        return m.Groups["p1"].Value.Replace(m.Groups["p2"].Value, res);
                     }
 
-                    url = url.Substring(idx2 + 1);
-                }
+                    throw new Exception("Макрос {" + name + "} не найден");
+                });
 
-            } while (idx >= 0);
-
-            builder.Append(url);
-
-            return GetMacroUrl(method, parameters, builder.ToString());
+            return text;
         }
 
         /*
