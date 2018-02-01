@@ -20,7 +20,7 @@
   <configurationElements>
     <configurationSection name="ApiSection" codeGenOptions="Singleton, XmlnsProperty" xmlSectionName="api">
       <elementProperties>
-        <elementProperty name="Tasks" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="tasks" isReadOnly="false" documentation="Список доступных задач">
+        <elementProperty name="Tasks" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="tasks" isReadOnly="true" documentation="Список доступных задач">
           <type>
             <configurationElementCollectionMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Tasks" />
           </type>
@@ -34,7 +34,7 @@
     </configurationSection>
     <configurationElement name="RunMethod">
       <attributeProperties>
-        <attributeProperty name="Method" isRequired="true" isKey="true" isDefaultCollection="false" xmlName="method" isReadOnly="false">
+        <attributeProperty name="Method" isRequired="true" isKey="true" isDefaultCollection="false" xmlName="method" isReadOnly="true">
           <type>
             <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
           </type>
@@ -48,14 +48,14 @@
     </configurationElementCollection>
     <configurationElement name="Task">
       <attributeProperties>
-        <attributeProperty name="Name" isRequired="true" isKey="true" isDefaultCollection="false" xmlName="name" isReadOnly="false">
+        <attributeProperty name="Name" isRequired="true" isKey="true" isDefaultCollection="false" xmlName="name" isReadOnly="true">
           <type>
             <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
           </type>
         </attributeProperty>
       </attributeProperties>
       <elementProperties>
-        <elementProperty name="Methods" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="methods" isReadOnly="false">
+        <elementProperty name="Methods" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="methods" isReadOnly="true">
           <type>
             <configurationElementCollectionMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/RunMethods" />
           </type>
@@ -74,7 +74,12 @@
             <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
           </type>
         </attributeProperty>
-        <attributeProperty name="ApiName" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="api_name" isReadOnly="false">
+        <attributeProperty name="ApiName" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="api_name" isReadOnly="false">
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
+          </type>
+        </attributeProperty>
+        <attributeProperty name="Path" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="path" isReadOnly="false">
           <type>
             <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
           </type>
@@ -99,6 +104,21 @@
             <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Boolean" />
           </type>
         </attributeProperty>
+        <attributeProperty name="Separator" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="separator" isReadOnly="false" defaultValue="&quot;,&quot;">
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
+          </type>
+        </attributeProperty>
+        <attributeProperty name="AccountParameter" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="account_parameter" isReadOnly="false">
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
+          </type>
+        </attributeProperty>
+        <attributeProperty name="Default" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="default" isReadOnly="false">
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
+          </type>
+        </attributeProperty>
       </attributeProperties>
       <elementProperties>
         <elementProperty name="Db" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="db" isReadOnly="false">
@@ -120,7 +140,7 @@
             <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
           </type>
         </attributeProperty>
-        <attributeProperty name="Type" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="type" isReadOnly="false">
+        <attributeProperty name="Type" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="type" isReadOnly="false">
           <type>
             <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/FbDbType" />
           </type>
@@ -189,23 +209,23 @@
       </itemType>
     </configurationElementCollection>
     <configurationElement name="Settings">
-      <attributeProperties>
-        <attributeProperty name="Url" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="url" isReadOnly="false" documentation="Адрес">
+      <elementProperties>
+        <elementProperty name="Accounts" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="accounts" isReadOnly="false">
           <type>
-            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
+            <configurationElementCollectionMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Accounts" />
           </type>
-        </attributeProperty>
-        <attributeProperty name="Login" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="login" isReadOnly="false" documentation="Имя пользователя">
+        </elementProperty>
+        <elementProperty name="Get" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="get" isReadOnly="false">
           <type>
-            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
+            <configurationElementMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Method_Get" />
           </type>
-        </attributeProperty>
-        <attributeProperty name="Password" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="password" isReadOnly="false" documentation="Пароль">
+        </elementProperty>
+        <elementProperty name="Post" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="post" isReadOnly="false">
           <type>
-            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
+            <configurationElementMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Method_Post" />
           </type>
-        </attributeProperty>
-      </attributeProperties>
+        </elementProperty>
+      </elementProperties>
     </configurationElement>
     <configurationElement name="Service" documentation="Описание сервиса (способ доступа, методы)">
       <attributeProperties>
@@ -257,6 +277,86 @@
         </attributeProperty>
       </attributeProperties>
     </configurationElement>
+    <configurationElement name="Method_Get">
+      <attributeProperties>
+        <attributeProperty name="Url" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="url" isReadOnly="false">
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
+          </type>
+        </attributeProperty>
+      </attributeProperties>
+    </configurationElement>
+    <configurationElement name="Method_Post">
+      <attributeProperties>
+        <attributeProperty name="Url" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="url" isReadOnly="false">
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
+          </type>
+        </attributeProperty>
+      </attributeProperties>
+      <elementProperties>
+        <elementProperty name="Contents" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="contents" isReadOnly="false">
+          <type>
+            <configurationElementCollectionMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Contents" />
+          </type>
+        </elementProperty>
+      </elementProperties>
+    </configurationElement>
+    <configurationElementCollection name="Contents" collectionType="AddRemoveClearMap" xmlItemName="content" codeGenOptions="Indexer, AddMethod, RemoveMethod, GetItemMethods">
+      <itemType>
+        <configurationElementMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Content" />
+      </itemType>
+    </configurationElementCollection>
+    <configurationElement name="Content">
+      <attributeProperties>
+        <attributeProperty name="Name" isRequired="true" isKey="true" isDefaultCollection="false" xmlName="name" isReadOnly="false">
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
+          </type>
+        </attributeProperty>
+        <attributeProperty name="Value" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="value" isReadOnly="false">
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
+          </type>
+        </attributeProperty>
+      </attributeProperties>
+    </configurationElement>
+    <configurationElement name="Account">
+      <attributeProperties>
+        <attributeProperty name="Name" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="name" isReadOnly="true">
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
+          </type>
+        </attributeProperty>
+        <attributeProperty name="Login" isRequired="true" isKey="true" isDefaultCollection="false" xmlName="login" isReadOnly="true">
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
+          </type>
+        </attributeProperty>
+        <attributeProperty name="Password" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="password" isReadOnly="true">
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
+          </type>
+        </attributeProperty>
+        <attributeProperty name="ContractId" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="contract_id" isReadOnly="false">
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Int32" />
+          </type>
+        </attributeProperty>
+      </attributeProperties>
+    </configurationElement>
+    <configurationElementCollection name="Accounts" xmlItemName="account" codeGenOptions="Indexer, AddMethod, RemoveMethod, GetItemMethods">
+      <attributeProperties>
+        <attributeProperty name="Default" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="default" isReadOnly="true">
+          <type>
+            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
+          </type>
+        </attributeProperty>
+      </attributeProperties>
+      <itemType>
+        <configurationElementMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/Account" />
+      </itemType>
+    </configurationElementCollection>
   </configurationElements>
   <propertyValidators>
     <validators />

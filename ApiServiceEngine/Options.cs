@@ -10,11 +10,14 @@
         [Option('t', "task", Required = true, HelpText = "Имя задачи заданное в конфигурационном файле в секции /configuration/api/tasks")]
         public string Task { get; set; }
 
-        [Option('p', "param", Required = true, HelpText = "Список параметров задачи вида Имя=Значение перечисленные через запятую. Имена параметров задаются в конфигурационном файле в секции /configuration/api/services/methods/method/in", Separator = ',')]
+        [Option('p', "param", HelpText = "Список параметров задачи вида Имя=Значение перечисленные через точку с запятой. Имена параметров задаются в конфигурационном файле в секции /configuration/api/services/methods/method/in", Separator = ';')]
         public IList<string> Parameters { get; set; }
 
         [Option('d', "database", Default = "default", HelpText = "Имя базы данных (список перечислен в конфигурационном файле в секции /configuration/connectionStrings")]
         public string Database { get; set; }
+
+        [Option('a', "account", HelpText = "Имя набора регистрационных данных указанных в секции /configuration/api/services/service/settings/accounts/")]
+        public string Account { get; set; }
 
         public StringDictionary ParamDictionary
         {

@@ -88,20 +88,17 @@ namespace ApiServiceEngine.Configuration
         internal const string TasksPropertyName = "tasks";
         
         /// <summary>
-        /// Gets or sets список доступных задач
+        /// Gets список доступных задач
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
         [global::System.ComponentModel.DescriptionAttribute("Список доступных задач")]
+        [global::System.ComponentModel.ReadOnlyAttribute(true)]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.ApiSection.TasksPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
         public virtual global::ApiServiceEngine.Configuration.Tasks Tasks
         {
             get
             {
                 return ((global::ApiServiceEngine.Configuration.Tasks)(base[global::ApiServiceEngine.Configuration.ApiSection.TasksPropertyName]));
-            }
-            set
-            {
-                base[global::ApiServiceEngine.Configuration.ApiSection.TasksPropertyName] = value;
             }
         }
         #endregion
@@ -162,20 +159,17 @@ namespace ApiServiceEngine.Configuration
         internal const string MethodPropertyName = "method";
         
         /// <summary>
-        /// Gets or sets the Method.
+        /// Gets the Method.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
         [global::System.ComponentModel.DescriptionAttribute("The Method.")]
+        [global::System.ComponentModel.ReadOnlyAttribute(true)]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.RunMethod.MethodPropertyName, IsRequired=true, IsKey=true, IsDefaultCollection=false)]
         public virtual string Method
         {
             get
             {
                 return ((string)(base[global::ApiServiceEngine.Configuration.RunMethod.MethodPropertyName]));
-            }
-            set
-            {
-                base[global::ApiServiceEngine.Configuration.RunMethod.MethodPropertyName] = value;
             }
         }
         #endregion
@@ -380,20 +374,17 @@ namespace ApiServiceEngine.Configuration
         internal const string NamePropertyName = "name";
         
         /// <summary>
-        /// Gets or sets the Name.
+        /// Gets the Name.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
         [global::System.ComponentModel.DescriptionAttribute("The Name.")]
+        [global::System.ComponentModel.ReadOnlyAttribute(true)]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Task.NamePropertyName, IsRequired=true, IsKey=true, IsDefaultCollection=false)]
         public virtual string Name
         {
             get
             {
                 return ((string)(base[global::ApiServiceEngine.Configuration.Task.NamePropertyName]));
-            }
-            set
-            {
-                base[global::ApiServiceEngine.Configuration.Task.NamePropertyName] = value;
             }
         }
         #endregion
@@ -406,20 +397,17 @@ namespace ApiServiceEngine.Configuration
         internal const string MethodsPropertyName = "methods";
         
         /// <summary>
-        /// Gets or sets the Methods.
+        /// Gets the Methods.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
         [global::System.ComponentModel.DescriptionAttribute("The Methods.")]
+        [global::System.ComponentModel.ReadOnlyAttribute(true)]
         [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Task.MethodsPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
         public virtual global::ApiServiceEngine.Configuration.RunMethods Methods
         {
             get
             {
                 return ((global::ApiServiceEngine.Configuration.RunMethods)(base[global::ApiServiceEngine.Configuration.Task.MethodsPropertyName]));
-            }
-            set
-            {
-                base[global::ApiServiceEngine.Configuration.Task.MethodsPropertyName] = value;
             }
         }
         #endregion
@@ -654,7 +642,7 @@ namespace ApiServiceEngine.Configuration
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
         [global::System.ComponentModel.DescriptionAttribute("The ApiName.")]
-        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Parameter.ApiNamePropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Parameter.ApiNamePropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
         public virtual string ApiName
         {
             get
@@ -664,6 +652,32 @@ namespace ApiServiceEngine.Configuration
             set
             {
                 base[global::ApiServiceEngine.Configuration.Parameter.ApiNamePropertyName] = value;
+            }
+        }
+        #endregion
+        
+        #region Path Property
+        /// <summary>
+        /// The XML name of the <see cref="Path"/> property.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string PathPropertyName = "path";
+        
+        /// <summary>
+        /// Gets or sets the Path.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        [global::System.ComponentModel.DescriptionAttribute("The Path.")]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Parameter.PathPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
+        public virtual string Path
+        {
+            get
+            {
+                return ((string)(base[global::ApiServiceEngine.Configuration.Parameter.PathPropertyName]));
+            }
+            set
+            {
+                base[global::ApiServiceEngine.Configuration.Parameter.PathPropertyName] = value;
             }
         }
         #endregion
@@ -768,6 +782,84 @@ namespace ApiServiceEngine.Configuration
             set
             {
                 base[global::ApiServiceEngine.Configuration.Parameter.IsListPropertyName] = value;
+            }
+        }
+        #endregion
+        
+        #region Separator Property
+        /// <summary>
+        /// The XML name of the <see cref="Separator"/> property.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string SeparatorPropertyName = "separator";
+        
+        /// <summary>
+        /// Gets or sets the Separator.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        [global::System.ComponentModel.DescriptionAttribute("The Separator.")]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Parameter.SeparatorPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false, DefaultValue=",")]
+        public virtual string Separator
+        {
+            get
+            {
+                return ((string)(base[global::ApiServiceEngine.Configuration.Parameter.SeparatorPropertyName]));
+            }
+            set
+            {
+                base[global::ApiServiceEngine.Configuration.Parameter.SeparatorPropertyName] = value;
+            }
+        }
+        #endregion
+        
+        #region AccountParameter Property
+        /// <summary>
+        /// The XML name of the <see cref="AccountParameter"/> property.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string AccountParameterPropertyName = "account_parameter";
+        
+        /// <summary>
+        /// Gets or sets the AccountParameter.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        [global::System.ComponentModel.DescriptionAttribute("The AccountParameter.")]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Parameter.AccountParameterPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
+        public virtual string AccountParameter
+        {
+            get
+            {
+                return ((string)(base[global::ApiServiceEngine.Configuration.Parameter.AccountParameterPropertyName]));
+            }
+            set
+            {
+                base[global::ApiServiceEngine.Configuration.Parameter.AccountParameterPropertyName] = value;
+            }
+        }
+        #endregion
+        
+        #region Default Property
+        /// <summary>
+        /// The XML name of the <see cref="Default"/> property.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string DefaultPropertyName = "default";
+        
+        /// <summary>
+        /// Gets or sets the Default.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        [global::System.ComponentModel.DescriptionAttribute("The Default.")]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Parameter.DefaultPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
+        public virtual string Default
+        {
+            get
+            {
+                return ((string)(base[global::ApiServiceEngine.Configuration.Parameter.DefaultPropertyName]));
+            }
+            set
+            {
+                base[global::ApiServiceEngine.Configuration.Parameter.DefaultPropertyName] = value;
             }
         }
         #endregion
@@ -884,7 +976,7 @@ namespace ApiServiceEngine.Configuration
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
         [global::System.ComponentModel.DescriptionAttribute("The Type.")]
-        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.DbProperty.TypePropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.DbProperty.TypePropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
         public virtual global::FirebirdSql.Data.FirebirdClient.FbDbType Type
         {
             get
@@ -1660,80 +1752,80 @@ namespace ApiServiceEngine.Configuration
         }
         #endregion
         
-        #region Url Property
+        #region Accounts Property
         /// <summary>
-        /// The XML name of the <see cref="Url"/> property.
+        /// The XML name of the <see cref="Accounts"/> property.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
-        internal const string UrlPropertyName = "url";
+        internal const string AccountsPropertyName = "accounts";
         
         /// <summary>
-        /// Gets or sets адрес
+        /// Gets or sets the Accounts.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
-        [global::System.ComponentModel.DescriptionAttribute("Адрес")]
-        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Settings.UrlPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
-        public virtual string Url
+        [global::System.ComponentModel.DescriptionAttribute("The Accounts.")]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Settings.AccountsPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
+        public virtual global::ApiServiceEngine.Configuration.Accounts Accounts
         {
             get
             {
-                return ((string)(base[global::ApiServiceEngine.Configuration.Settings.UrlPropertyName]));
+                return ((global::ApiServiceEngine.Configuration.Accounts)(base[global::ApiServiceEngine.Configuration.Settings.AccountsPropertyName]));
             }
             set
             {
-                base[global::ApiServiceEngine.Configuration.Settings.UrlPropertyName] = value;
+                base[global::ApiServiceEngine.Configuration.Settings.AccountsPropertyName] = value;
             }
         }
         #endregion
         
-        #region Login Property
+        #region Get Property
         /// <summary>
-        /// The XML name of the <see cref="Login"/> property.
+        /// The XML name of the <see cref="Get"/> property.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
-        internal const string LoginPropertyName = "login";
+        internal const string GetPropertyName = "get";
         
         /// <summary>
-        /// Gets or sets имя пользователя
+        /// Gets or sets the Get.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
-        [global::System.ComponentModel.DescriptionAttribute("Имя пользователя")]
-        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Settings.LoginPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
-        public virtual string Login
+        [global::System.ComponentModel.DescriptionAttribute("The Get.")]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Settings.GetPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
+        public virtual global::ApiServiceEngine.Configuration.Method_Get Get
         {
             get
             {
-                return ((string)(base[global::ApiServiceEngine.Configuration.Settings.LoginPropertyName]));
+                return ((global::ApiServiceEngine.Configuration.Method_Get)(base[global::ApiServiceEngine.Configuration.Settings.GetPropertyName]));
             }
             set
             {
-                base[global::ApiServiceEngine.Configuration.Settings.LoginPropertyName] = value;
+                base[global::ApiServiceEngine.Configuration.Settings.GetPropertyName] = value;
             }
         }
         #endregion
         
-        #region Password Property
+        #region Post Property
         /// <summary>
-        /// The XML name of the <see cref="Password"/> property.
+        /// The XML name of the <see cref="Post"/> property.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
-        internal const string PasswordPropertyName = "password";
+        internal const string PostPropertyName = "post";
         
         /// <summary>
-        /// Gets or sets пароль
+        /// Gets or sets the Post.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
-        [global::System.ComponentModel.DescriptionAttribute("Пароль")]
-        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Settings.PasswordPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
-        public virtual string Password
+        [global::System.ComponentModel.DescriptionAttribute("The Post.")]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Settings.PostPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
+        public virtual global::ApiServiceEngine.Configuration.Method_Post Post
         {
             get
             {
-                return ((string)(base[global::ApiServiceEngine.Configuration.Settings.PasswordPropertyName]));
+                return ((global::ApiServiceEngine.Configuration.Method_Post)(base[global::ApiServiceEngine.Configuration.Settings.PostPropertyName]));
             }
             set
             {
-                base[global::ApiServiceEngine.Configuration.Settings.PasswordPropertyName] = value;
+                base[global::ApiServiceEngine.Configuration.Settings.PostPropertyName] = value;
             }
         }
         #endregion
@@ -2131,6 +2223,682 @@ namespace ApiServiceEngine.Configuration
             set
             {
                 base[global::ApiServiceEngine.Configuration.Recive.ParameterPropertyName] = value;
+            }
+        }
+        #endregion
+    }
+}
+namespace ApiServiceEngine.Configuration
+{
+    
+    
+    /// <summary>
+    /// The Method_Get Configuration Element.
+    /// </summary>
+    public partial class Method_Get : global::System.Configuration.ConfigurationElement
+    {
+        
+        #region IsReadOnly override
+        /// <summary>
+        /// Gets a value indicating whether the element is read-only.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        public override bool IsReadOnly()
+        {
+            return false;
+        }
+        #endregion
+        
+        #region Url Property
+        /// <summary>
+        /// The XML name of the <see cref="Url"/> property.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string UrlPropertyName = "url";
+        
+        /// <summary>
+        /// Gets or sets the Url.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        [global::System.ComponentModel.DescriptionAttribute("The Url.")]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Method_Get.UrlPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
+        public virtual string Url
+        {
+            get
+            {
+                return ((string)(base[global::ApiServiceEngine.Configuration.Method_Get.UrlPropertyName]));
+            }
+            set
+            {
+                base[global::ApiServiceEngine.Configuration.Method_Get.UrlPropertyName] = value;
+            }
+        }
+        #endregion
+    }
+}
+namespace ApiServiceEngine.Configuration
+{
+    
+    
+    /// <summary>
+    /// The Method_Post Configuration Element.
+    /// </summary>
+    public partial class Method_Post : global::System.Configuration.ConfigurationElement
+    {
+        
+        #region IsReadOnly override
+        /// <summary>
+        /// Gets a value indicating whether the element is read-only.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        public override bool IsReadOnly()
+        {
+            return false;
+        }
+        #endregion
+        
+        #region Url Property
+        /// <summary>
+        /// The XML name of the <see cref="Url"/> property.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string UrlPropertyName = "url";
+        
+        /// <summary>
+        /// Gets or sets the Url.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        [global::System.ComponentModel.DescriptionAttribute("The Url.")]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Method_Post.UrlPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
+        public virtual string Url
+        {
+            get
+            {
+                return ((string)(base[global::ApiServiceEngine.Configuration.Method_Post.UrlPropertyName]));
+            }
+            set
+            {
+                base[global::ApiServiceEngine.Configuration.Method_Post.UrlPropertyName] = value;
+            }
+        }
+        #endregion
+        
+        #region Contents Property
+        /// <summary>
+        /// The XML name of the <see cref="Contents"/> property.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string ContentsPropertyName = "contents";
+        
+        /// <summary>
+        /// Gets or sets the Contents.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        [global::System.ComponentModel.DescriptionAttribute("The Contents.")]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Method_Post.ContentsPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
+        public virtual global::ApiServiceEngine.Configuration.Contents Contents
+        {
+            get
+            {
+                return ((global::ApiServiceEngine.Configuration.Contents)(base[global::ApiServiceEngine.Configuration.Method_Post.ContentsPropertyName]));
+            }
+            set
+            {
+                base[global::ApiServiceEngine.Configuration.Method_Post.ContentsPropertyName] = value;
+            }
+        }
+        #endregion
+    }
+}
+namespace ApiServiceEngine.Configuration
+{
+    
+    
+    /// <summary>
+    /// A collection of Content instances.
+    /// </summary>
+    [global::System.Configuration.ConfigurationCollectionAttribute(typeof(global::ApiServiceEngine.Configuration.Content), CollectionType=global::System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap, AddItemName="add", RemoveItemName="remove", ClearItemsName="clear")]
+    public partial class Contents : global::System.Configuration.ConfigurationElementCollection
+    {
+        
+        #region Constants
+        /// <summary>
+        /// The XML name of the individual <see cref="global::ApiServiceEngine.Configuration.Content"/> instances in this collection.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string ContentPropertyName = "content";
+        #endregion
+        
+        #region Overrides
+        /// <summary>
+        /// Gets the type of the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
+        /// </summary>
+        /// <returns>The <see cref="global::System.Configuration.ConfigurationElementCollectionType"/> of this collection.</returns>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        public override global::System.Configuration.ConfigurationElementCollectionType CollectionType
+        {
+            get
+            {
+                return global::System.Configuration.ConfigurationElementCollectionType.AddRemoveClearMap;
+            }
+        }
+        
+        /// <summary>
+        /// Gets the name used to identify this collection of elements
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        protected override string ElementName
+        {
+            get
+            {
+                return global::ApiServiceEngine.Configuration.Contents.ContentPropertyName;
+            }
+        }
+        
+        /// <summary>
+        /// Indicates whether the specified <see cref="global::System.Configuration.ConfigurationElement"/> exists in the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
+        /// </summary>
+        /// <param name="elementName">The name of the element to verify.</param>
+        /// <returns>
+        /// <see langword="true"/> if the element exists in the collection; otherwise, <see langword="false"/>.
+        /// </returns>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        protected override bool IsElementName(string elementName)
+        {
+            return (elementName == global::ApiServiceEngine.Configuration.Contents.ContentPropertyName);
+        }
+        
+        /// <summary>
+        /// Gets the element key for the specified configuration element.
+        /// </summary>
+        /// <param name="element">The <see cref="global::System.Configuration.ConfigurationElement"/> to return the key for.</param>
+        /// <returns>
+        /// An <see cref="object"/> that acts as the key for the specified <see cref="global::System.Configuration.ConfigurationElement"/>.
+        /// </returns>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        protected override object GetElementKey(global::System.Configuration.ConfigurationElement element)
+        {
+            return ((global::ApiServiceEngine.Configuration.Content)(element)).Name;
+        }
+        
+        /// <summary>
+        /// Creates a new <see cref="global::ApiServiceEngine.Configuration.Content"/>.
+        /// </summary>
+        /// <returns>
+        /// A new <see cref="global::ApiServiceEngine.Configuration.Content"/>.
+        /// </returns>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        protected override global::System.Configuration.ConfigurationElement CreateNewElement()
+        {
+            return new global::ApiServiceEngine.Configuration.Content();
+        }
+        #endregion
+        
+        #region Indexer
+        /// <summary>
+        /// Gets the <see cref="global::ApiServiceEngine.Configuration.Content"/> at the specified index.
+        /// </summary>
+        /// <param name="index">The index of the <see cref="global::ApiServiceEngine.Configuration.Content"/> to retrieve.</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        public global::ApiServiceEngine.Configuration.Content this[int index]
+        {
+            get
+            {
+                return ((global::ApiServiceEngine.Configuration.Content)(base.BaseGet(index)));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the <see cref="global::ApiServiceEngine.Configuration.Content"/> with the specified key.
+        /// </summary>
+        /// <param name="name">The key of the <see cref="global::ApiServiceEngine.Configuration.Content"/> to retrieve.</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        public global::ApiServiceEngine.Configuration.Content this[object name]
+        {
+            get
+            {
+                return ((global::ApiServiceEngine.Configuration.Content)(base.BaseGet(name)));
+            }
+        }
+        #endregion
+        
+        #region Add
+        /// <summary>
+        /// Adds the specified <see cref="global::ApiServiceEngine.Configuration.Content"/> to the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
+        /// </summary>
+        /// <param name="content">The <see cref="global::ApiServiceEngine.Configuration.Content"/> to add.</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        public void Add(global::ApiServiceEngine.Configuration.Content content)
+        {
+            base.BaseAdd(content);
+        }
+        #endregion
+        
+        #region Remove
+        /// <summary>
+        /// Removes the specified <see cref="global::ApiServiceEngine.Configuration.Content"/> from the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
+        /// </summary>
+        /// <param name="content">The <see cref="global::ApiServiceEngine.Configuration.Content"/> to remove.</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        public void Remove(global::ApiServiceEngine.Configuration.Content content)
+        {
+            base.BaseRemove(this.GetElementKey(content));
+        }
+        #endregion
+        
+        #region GetItem
+        /// <summary>
+        /// Gets the <see cref="global::ApiServiceEngine.Configuration.Content"/> at the specified index.
+        /// </summary>
+        /// <param name="index">The index of the <see cref="global::ApiServiceEngine.Configuration.Content"/> to retrieve.</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        public global::ApiServiceEngine.Configuration.Content GetItemAt(int index)
+        {
+            return ((global::ApiServiceEngine.Configuration.Content)(base.BaseGet(index)));
+        }
+        
+        /// <summary>
+        /// Gets the <see cref="global::ApiServiceEngine.Configuration.Content"/> with the specified key.
+        /// </summary>
+        /// <param name="name">The key of the <see cref="global::ApiServiceEngine.Configuration.Content"/> to retrieve.</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        public global::ApiServiceEngine.Configuration.Content GetItemByKey(string name)
+        {
+            return ((global::ApiServiceEngine.Configuration.Content)(base.BaseGet(((object)(name)))));
+        }
+        #endregion
+        
+        #region IsReadOnly override
+        /// <summary>
+        /// Gets a value indicating whether the element is read-only.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        public override bool IsReadOnly()
+        {
+            return false;
+        }
+        #endregion
+    }
+}
+namespace ApiServiceEngine.Configuration
+{
+    
+    
+    /// <summary>
+    /// The Content Configuration Element.
+    /// </summary>
+    public partial class Content : global::System.Configuration.ConfigurationElement
+    {
+        
+        #region IsReadOnly override
+        /// <summary>
+        /// Gets a value indicating whether the element is read-only.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        public override bool IsReadOnly()
+        {
+            return false;
+        }
+        #endregion
+        
+        #region Name Property
+        /// <summary>
+        /// The XML name of the <see cref="Name"/> property.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string NamePropertyName = "name";
+        
+        /// <summary>
+        /// Gets or sets the Name.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        [global::System.ComponentModel.DescriptionAttribute("The Name.")]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Content.NamePropertyName, IsRequired=true, IsKey=true, IsDefaultCollection=false)]
+        public virtual string Name
+        {
+            get
+            {
+                return ((string)(base[global::ApiServiceEngine.Configuration.Content.NamePropertyName]));
+            }
+            set
+            {
+                base[global::ApiServiceEngine.Configuration.Content.NamePropertyName] = value;
+            }
+        }
+        #endregion
+        
+        #region Value Property
+        /// <summary>
+        /// The XML name of the <see cref="Value"/> property.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string ValuePropertyName = "value";
+        
+        /// <summary>
+        /// Gets or sets the Value.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        [global::System.ComponentModel.DescriptionAttribute("The Value.")]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Content.ValuePropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
+        public virtual string Value
+        {
+            get
+            {
+                return ((string)(base[global::ApiServiceEngine.Configuration.Content.ValuePropertyName]));
+            }
+            set
+            {
+                base[global::ApiServiceEngine.Configuration.Content.ValuePropertyName] = value;
+            }
+        }
+        #endregion
+    }
+}
+namespace ApiServiceEngine.Configuration
+{
+    
+    
+    /// <summary>
+    /// The Account Configuration Element.
+    /// </summary>
+    public partial class Account : global::System.Configuration.ConfigurationElement
+    {
+        
+        #region IsReadOnly override
+        /// <summary>
+        /// Gets a value indicating whether the element is read-only.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        public override bool IsReadOnly()
+        {
+            return false;
+        }
+        #endregion
+        
+        #region Name Property
+        /// <summary>
+        /// The XML name of the <see cref="Name"/> property.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string NamePropertyName = "name";
+        
+        /// <summary>
+        /// Gets the Name.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        [global::System.ComponentModel.DescriptionAttribute("The Name.")]
+        [global::System.ComponentModel.ReadOnlyAttribute(true)]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Account.NamePropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
+        public virtual string Name
+        {
+            get
+            {
+                return ((string)(base[global::ApiServiceEngine.Configuration.Account.NamePropertyName]));
+            }
+        }
+        #endregion
+        
+        #region Login Property
+        /// <summary>
+        /// The XML name of the <see cref="Login"/> property.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string LoginPropertyName = "login";
+        
+        /// <summary>
+        /// Gets the Login.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        [global::System.ComponentModel.DescriptionAttribute("The Login.")]
+        [global::System.ComponentModel.ReadOnlyAttribute(true)]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Account.LoginPropertyName, IsRequired=true, IsKey=true, IsDefaultCollection=false)]
+        public virtual string Login
+        {
+            get
+            {
+                return ((string)(base[global::ApiServiceEngine.Configuration.Account.LoginPropertyName]));
+            }
+        }
+        #endregion
+        
+        #region Password Property
+        /// <summary>
+        /// The XML name of the <see cref="Password"/> property.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string PasswordPropertyName = "password";
+        
+        /// <summary>
+        /// Gets the Password.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        [global::System.ComponentModel.DescriptionAttribute("The Password.")]
+        [global::System.ComponentModel.ReadOnlyAttribute(true)]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Account.PasswordPropertyName, IsRequired=false, IsKey=false, IsDefaultCollection=false)]
+        public virtual string Password
+        {
+            get
+            {
+                return ((string)(base[global::ApiServiceEngine.Configuration.Account.PasswordPropertyName]));
+            }
+        }
+        #endregion
+        
+        #region ContractId Property
+        /// <summary>
+        /// The XML name of the <see cref="ContractId"/> property.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string ContractIdPropertyName = "contract_id";
+        
+        /// <summary>
+        /// Gets or sets the ContractId.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        [global::System.ComponentModel.DescriptionAttribute("The ContractId.")]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Account.ContractIdPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
+        public virtual int ContractId
+        {
+            get
+            {
+                return ((int)(base[global::ApiServiceEngine.Configuration.Account.ContractIdPropertyName]));
+            }
+            set
+            {
+                base[global::ApiServiceEngine.Configuration.Account.ContractIdPropertyName] = value;
+            }
+        }
+        #endregion
+    }
+}
+namespace ApiServiceEngine.Configuration
+{
+    
+    
+    /// <summary>
+    /// A collection of Account instances.
+    /// </summary>
+    [global::System.Configuration.ConfigurationCollectionAttribute(typeof(global::ApiServiceEngine.Configuration.Account), CollectionType=global::System.Configuration.ConfigurationElementCollectionType.BasicMapAlternate, AddItemName=global::ApiServiceEngine.Configuration.Accounts.AccountPropertyName)]
+    public partial class Accounts : global::System.Configuration.ConfigurationElementCollection
+    {
+        
+        #region Constants
+        /// <summary>
+        /// The XML name of the individual <see cref="global::ApiServiceEngine.Configuration.Account"/> instances in this collection.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string AccountPropertyName = "account";
+        #endregion
+        
+        #region Overrides
+        /// <summary>
+        /// Gets the type of the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
+        /// </summary>
+        /// <returns>The <see cref="global::System.Configuration.ConfigurationElementCollectionType"/> of this collection.</returns>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        public override global::System.Configuration.ConfigurationElementCollectionType CollectionType
+        {
+            get
+            {
+                return global::System.Configuration.ConfigurationElementCollectionType.BasicMapAlternate;
+            }
+        }
+        
+        /// <summary>
+        /// Gets the name used to identify this collection of elements
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        protected override string ElementName
+        {
+            get
+            {
+                return global::ApiServiceEngine.Configuration.Accounts.AccountPropertyName;
+            }
+        }
+        
+        /// <summary>
+        /// Indicates whether the specified <see cref="global::System.Configuration.ConfigurationElement"/> exists in the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
+        /// </summary>
+        /// <param name="elementName">The name of the element to verify.</param>
+        /// <returns>
+        /// <see langword="true"/> if the element exists in the collection; otherwise, <see langword="false"/>.
+        /// </returns>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        protected override bool IsElementName(string elementName)
+        {
+            return (elementName == global::ApiServiceEngine.Configuration.Accounts.AccountPropertyName);
+        }
+        
+        /// <summary>
+        /// Gets the element key for the specified configuration element.
+        /// </summary>
+        /// <param name="element">The <see cref="global::System.Configuration.ConfigurationElement"/> to return the key for.</param>
+        /// <returns>
+        /// An <see cref="object"/> that acts as the key for the specified <see cref="global::System.Configuration.ConfigurationElement"/>.
+        /// </returns>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        protected override object GetElementKey(global::System.Configuration.ConfigurationElement element)
+        {
+            return ((global::ApiServiceEngine.Configuration.Account)(element)).Login;
+        }
+        
+        /// <summary>
+        /// Creates a new <see cref="global::ApiServiceEngine.Configuration.Account"/>.
+        /// </summary>
+        /// <returns>
+        /// A new <see cref="global::ApiServiceEngine.Configuration.Account"/>.
+        /// </returns>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        protected override global::System.Configuration.ConfigurationElement CreateNewElement()
+        {
+            return new global::ApiServiceEngine.Configuration.Account();
+        }
+        #endregion
+        
+        #region Indexer
+        /// <summary>
+        /// Gets the <see cref="global::ApiServiceEngine.Configuration.Account"/> at the specified index.
+        /// </summary>
+        /// <param name="index">The index of the <see cref="global::ApiServiceEngine.Configuration.Account"/> to retrieve.</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        public global::ApiServiceEngine.Configuration.Account this[int index]
+        {
+            get
+            {
+                return ((global::ApiServiceEngine.Configuration.Account)(base.BaseGet(index)));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the <see cref="global::ApiServiceEngine.Configuration.Account"/> with the specified key.
+        /// </summary>
+        /// <param name="login">The key of the <see cref="global::ApiServiceEngine.Configuration.Account"/> to retrieve.</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        public global::ApiServiceEngine.Configuration.Account this[object login]
+        {
+            get
+            {
+                return ((global::ApiServiceEngine.Configuration.Account)(base.BaseGet(login)));
+            }
+        }
+        #endregion
+        
+        #region Add
+        /// <summary>
+        /// Adds the specified <see cref="global::ApiServiceEngine.Configuration.Account"/> to the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
+        /// </summary>
+        /// <param name="account">The <see cref="global::ApiServiceEngine.Configuration.Account"/> to add.</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        public void Add(global::ApiServiceEngine.Configuration.Account account)
+        {
+            base.BaseAdd(account);
+        }
+        #endregion
+        
+        #region Remove
+        /// <summary>
+        /// Removes the specified <see cref="global::ApiServiceEngine.Configuration.Account"/> from the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
+        /// </summary>
+        /// <param name="account">The <see cref="global::ApiServiceEngine.Configuration.Account"/> to remove.</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        public void Remove(global::ApiServiceEngine.Configuration.Account account)
+        {
+            base.BaseRemove(this.GetElementKey(account));
+        }
+        #endregion
+        
+        #region GetItem
+        /// <summary>
+        /// Gets the <see cref="global::ApiServiceEngine.Configuration.Account"/> at the specified index.
+        /// </summary>
+        /// <param name="index">The index of the <see cref="global::ApiServiceEngine.Configuration.Account"/> to retrieve.</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        public global::ApiServiceEngine.Configuration.Account GetItemAt(int index)
+        {
+            return ((global::ApiServiceEngine.Configuration.Account)(base.BaseGet(index)));
+        }
+        
+        /// <summary>
+        /// Gets the <see cref="global::ApiServiceEngine.Configuration.Account"/> with the specified key.
+        /// </summary>
+        /// <param name="login">The key of the <see cref="global::ApiServiceEngine.Configuration.Account"/> to retrieve.</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        public global::ApiServiceEngine.Configuration.Account GetItemByKey(string login)
+        {
+            return ((global::ApiServiceEngine.Configuration.Account)(base.BaseGet(((object)(login)))));
+        }
+        #endregion
+        
+        #region IsReadOnly override
+        /// <summary>
+        /// Gets a value indicating whether the element is read-only.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        public override bool IsReadOnly()
+        {
+            return false;
+        }
+        #endregion
+        
+        #region Default Property
+        /// <summary>
+        /// The XML name of the <see cref="Default"/> property.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        internal const string DefaultPropertyName = "default";
+        
+        /// <summary>
+        /// Gets the Default.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
+        [global::System.ComponentModel.DescriptionAttribute("The Default.")]
+        [global::System.ComponentModel.ReadOnlyAttribute(true)]
+        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Accounts.DefaultPropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
+        public virtual string Default
+        {
+            get
+            {
+                return ((string)(base[global::ApiServiceEngine.Configuration.Accounts.DefaultPropertyName]));
             }
         }
         #endregion

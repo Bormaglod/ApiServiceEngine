@@ -98,9 +98,14 @@
 				<xs:documentation>The Name.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="api_name" use="required" type="xs:string">
+		<xs:attribute name="api_name" use="optional" type="xs:string">
 			<xs:annotation>
 				<xs:documentation>The ApiName.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="path" use="optional" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The Path.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="is_page" use="optional" type="xs:boolean">
@@ -123,6 +128,21 @@
 				<xs:documentation>The IsList.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="separator" use="optional" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The Separator.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="account_parameter" use="optional" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The AccountParameter.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="default" use="optional" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The Default.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="ApiServiceEngine.Configuration.DbPropertyCT">
 		<xs:attribute name="field" use="required" type="xs:string">
@@ -130,7 +150,7 @@
 				<xs:documentation>The Field.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="type" use="required">
+		<xs:attribute name="type" use="optional">
 			<xs:annotation>
 				<xs:documentation>The Type.</xs:documentation>
 			</xs:annotation>
@@ -232,21 +252,23 @@
 		</xs:complexType>
 	<xs:complexType name="ApiServiceEngine.Configuration.MethodsClearCT" />
 	<xs:complexType name="ApiServiceEngine.Configuration.SettingsCT">
-		<xs:attribute name="url" use="required" type="xs:string">
-			<xs:annotation>
-				<xs:documentation>Адрес</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:attribute name="login" use="optional" type="xs:string">
-			<xs:annotation>
-				<xs:documentation>Имя пользователя</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:attribute name="password" use="optional" type="xs:string">
-			<xs:annotation>
-				<xs:documentation>Пароль</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element minOccurs="0" name="accounts" type="tns:ApiServiceEngine.Configuration.AccountsCT">
+				<xs:annotation>
+					<xs:documentation>The Accounts.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="get" type="tns:ApiServiceEngine.Configuration.Method_GetCT">
+				<xs:annotation>
+					<xs:documentation>The Get.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" name="post" type="tns:ApiServiceEngine.Configuration.Method_PostCT">
+				<xs:annotation>
+					<xs:documentation>The Post.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
 	</xs:complexType>
 	<xs:complexType name="ApiServiceEngine.Configuration.ServiceCT">
 		<xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -306,6 +328,102 @@
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
+	<xs:complexType name="ApiServiceEngine.Configuration.Method_GetCT">
+		<xs:attribute name="url" use="optional" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The Url.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ApiServiceEngine.Configuration.Method_PostCT">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element minOccurs="0" name="contents" type="tns:ApiServiceEngine.Configuration.ContentsCT">
+				<xs:annotation>
+					<xs:documentation>The Contents.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="url" use="optional" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The Url.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ApiServiceEngine.Configuration.ContentsCT">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="clear" type="tns:ApiServiceEngine.Configuration.ContentsClearCT" />
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="remove" type="tns:ApiServiceEngine.Configuration.ContentsRemoveCT" />
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="add" type="tns:ApiServiceEngine.Configuration.ContentCT">
+				<xs:annotation>
+					<xs:documentation>The Content Configuration Element.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="ApiServiceEngine.Configuration.ContentsRemoveCT">
+				<xs:attribute name="name" use="required" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The Name.</xs:documentation>
+				</xs:annotation>
+				</xs:attribute>
+		</xs:complexType>
+	<xs:complexType name="ApiServiceEngine.Configuration.ContentsClearCT" />
+	<xs:complexType name="ApiServiceEngine.Configuration.ContentCT">
+		<xs:attribute name="name" use="required" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The Name.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="value" use="optional" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The Value.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ApiServiceEngine.Configuration.AccountCT">
+		<xs:attribute name="name" use="optional" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The Name.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="login" use="required" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The Login.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="password" use="optional" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The Password.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="contract_id" use="required" type="xs:int">
+			<xs:annotation>
+				<xs:documentation>The ContractId.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ApiServiceEngine.Configuration.AccountsCT">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="account" type="tns:ApiServiceEngine.Configuration.AccountCT">
+				<xs:annotation>
+					<xs:documentation>The Account Configuration Element.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="default" use="required" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The Default.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ApiServiceEngine.Configuration.AccountsRemoveCT">
+				<xs:attribute name="login" use="required" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The Login.</xs:documentation>
+				</xs:annotation>
+				</xs:attribute>
+		</xs:complexType>
+	<xs:complexType name="ApiServiceEngine.Configuration.AccountsClearCT" />
 	<xs:simpleType name="RequestMethod">
 		<xs:annotation>
 			<xs:documentation>RequestMethod.</xs:documentation>

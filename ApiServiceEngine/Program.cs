@@ -47,7 +47,14 @@
                 return;
             }
 
-            FbConnection conn = new FbConnection(GetConnectionString(options.Database));
+            string connectionString = ConfigurationManager.ConnectionStrings[options.Database]?.ConnectionString;
+            if (connectionString == null)
+            {
+                LogHelper.Logger.Error($"Неизвестное имя базы данных {options.Database}");
+                return;
+            }
+
+            FbConnection conn = new FbConnection(connectionString);
             try
             {
                 conn.Open();
@@ -73,38 +80,48 @@
                         continue;
                     }
 
-                    IEnumerable<ServiceAPI> services = LoadServices(conn, tran);
-                    ServiceAPI api = services.FirstOrDefault(x => x.Name == service.Name);
-
-                    Method m = service.GetMethod(runMethod.Method);
-                    if (m == null)
+                    IEnumerable<Account> accounts;
+                    string account_name = string.IsNullOrEmpty(options.Account) ? service.Settings.Accounts.Default : options.Account;
+                    if (account_name == "*")
                     {
-                        LogHelper.Logger.Error($"Заявленный на выполнение метод {service.Name}.{runMethod.Method} отсутствует в списке методов сервиса. Метод не будет выполнен.");
-                        continue;
+                        accounts = service.Settings.Accounts.OfType<Account>();
+                    }
+                    else
+                    {
+                        Account account = service.Settings.Accounts.GetAccount(account_name);
+                        if (account == null)
+                        {
+                            LogHelper.Logger.Error($"Неверно указано имя регистрационных данных. Метод {runMethod.Method} для задачи {task.Name} не будет выполнен.");
+                            continue;
+                        }
+
+                        accounts = new Account[] { account };
                     }
 
-                    // проверим наличие обязательных параметров
-                    /*StringBuilder builder = new StringBuilder();
-                    foreach (ParameterMethod p in m.OfType<ParameterMethod>().Where(x => x.Required && x.In))
+                    foreach (Account account in accounts)
                     {
-                        ParameterValue pv = parameters.Get(m.Name, p.Name);
-                        if (pv == null)
-                            builder.Append($"{p.Name},");
+                        List<ServiceAPI> services = new List<ServiceAPI>();
+
+                        ApiSection.Instance.Services
+                            .OfType<Service>()
+                            .ToList<Service>()
+                            .ForEach(x => services.Add(new ServiceAPI(x, account, conn, tran)));
+
+                        ServiceAPI api = services.FirstOrDefault(x => x.Name == service.Name);
+
+                        Method m = service.GetMethod(runMethod.Method);
+                        if (m == null)
+                        {
+                            LogHelper.Logger.Error($"Заявленный на выполнение метод {service.Name}.{runMethod.Method} отсутствует в списке методов сервиса. Метод не будет выполнен.");
+                            continue;
+                        }
+
+                        LogHelper.Logger.Info($"Выполнение метода {m.Name}.");
+
+                        HttpStatusCode statusCode = api.ExecuteMethod(m, options.ParamDictionary).Status;
+                        if (statusCode != HttpStatusCode.OK)
+                            LogHelper.Logger.Error($"Вызов метода {m.Name} вернул код ошибки {statusCode}.");
                     }
-
-                    if (builder.Length > 0)
-                    {
-                        string paramNeeded = builder.Remove(builder.Length - 1, 1).ToString();
-
-                        LogHelper.Logger.Error($"Для метода {m.Name} обязательно использование параметров [{paramNeeded}]. Метод не будет выполнен.");
-                        continue;
-                    }*/
-
-                    LogHelper.Logger.Info($"Выполнение метода {m.Name}.");
-
-                    HttpStatusCode statusCode = api.ExecuteMethod(m, options.ParamDictionary).Status;
-                    if (statusCode != HttpStatusCode.OK)
-                        LogHelper.Logger.Error($"Вызов метода {m.Name} вернул код ошибки {statusCode}.");
                 }
             }
             finally
@@ -118,49 +135,6 @@
         static void HandleParseError(IEnumerable<Error> errs)
         {
 
-        }
-
-        static string GetConnectionString(string name)
-        {
-            // Assume failure.
-            string returnValue = null;
-
-            // Look for the name in the connectionStrings section.
-            ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings[name];
-
-            // If found, return the connection string.
-            if (settings != null)
-                returnValue = settings.ConnectionString;
-
-            return returnValue;
-        }
-
-        static IEnumerable<ServiceAPI> LoadServices(FbConnection conn, FbTransaction tran)
-        {
-            // список всех описанных сервисов
-            List<ServiceAPI> services = new List<ServiceAPI>();
-
-            foreach (Service service in ApiSection.Instance.Services)
-            {
-                Type type = Assembly.GetCallingAssembly().GetTypes().FirstOrDefault(x => x.FullName == service.Type);
-                if (type != null)
-                {
-                    try
-                    {
-                        services.Add((ServiceAPI)Activator.CreateInstance(type, new object[] { service, conn, tran }));
-                    }
-                    catch (Exception)
-                    {
-                        LogHelper.Logger.Warn($"Ошибка при создании обработчика сервиса {service.Name}.  Запросы к этому обработчику будут проигнорированы.");
-                    }
-                }
-                else
-                {
-                    LogHelper.Logger.Warn($"Не найден класс {service.Type} для создания обработчика сервиса { service.Name}. Запросы к нему будут проигнорированы.");
-                }
-            }
-
-            return services;
         }
     }
 }
