@@ -68,23 +68,39 @@
             return (DictionaryFromApiResult(method, d), response.StatusCode);
         }
 
-        public object GetPropertyFromMethod(string methodName, string param, StringDictionary parameters)
+        private object ExecuteMethod(string methodName, string parameterName, StringDictionary parameters)
         {
             Method method = service.GetMethod(methodName);
-            (object Info, HttpStatusCode Status) = ExecuteWebMethod(method, parameters);
+            Parameter parameter = method.Out.GetApiParameter(parameterName);
+            if (parameter == null)
+            {
+                throw new UnknownPropertyException($"Неизвестный параметр {parameterName} при вызове метода {methodName}");
+            }
+
+            (List<Dictionary<Parameter, object>> Info, HttpStatusCode Status) = ExecuteWebMethod(method, parameters);
             if (Info == null)
             {
                 throw new ExecuteMethodException($"Вызов метода {method} произведен неудачно.");
             }
 
-            Parameter parameter = method.Out.GetParameter(param);
-            PropertyInfo pInfo = Info.GetType().GetProperty(parameter);
-            if (pInfo == null)
+            if (Status == HttpStatusCode.OK)
             {
-                throw new UnknownPropertyException($"Неизвестный параметр {param} метода {method}");
+                StringBuilder builder = new StringBuilder();
+                foreach (Dictionary<Parameter, object> item in Info)
+                {
+                    if (item.ContainsKey(parameter))
+                    {
+                        if (builder.Length > 0)
+                            builder.Append(",");
+
+                        builder.Append(item[parameter]);
+                    }
+                }
+
+                return builder.ToString();
             }
 
-            return pInfo.GetValue(Info);
+            return string.Empty;
         }
 
         private HttpWebResponse GetResponse(Method method, StringDictionary parameters)
@@ -134,17 +150,36 @@
                 {
                     if (item.IsList)
                     {
-                        content.Add(key: item.GetApiName(), value: parameters[item.Name].Split(new string[] { item.Separator }, StringSplitOptions.RemoveEmptyEntries));
+                        content.Add(item.GetApiName(), parameters[item.Name].Split(new string[] { item.Separator }, StringSplitOptions.RemoveEmptyEntries));
                     }
                     else
                     {
-                        content.Add(key: item.GetApiName(), value: parameters[item.Name]);
+                        content.Add(item.GetApiName(), parameters[item.Name]);
                     }
                 }
                 else
                 {
                     if (item.Required)
-                        LogHelper.Logger.Error($"Отсутствует параметр {item.Name}");
+                    {
+                        string res = string.Empty;
+                        if (!string.IsNullOrEmpty(item.Default))
+                        {
+                            res = item.Default;
+                        }
+                        else if (!string.IsNullOrEmpty(item.AccountParameter))
+                        {
+                            res = account.GetParameterValue(item.AccountParameter);
+                        }
+                        else if (!string.IsNullOrEmpty(item.Recive.Method))
+                        {
+                            res = ExecuteMethod(item.Recive.Method, item.Recive.Parameter, parameters).ToString();
+                        }
+
+                        if (!string.IsNullOrEmpty(res))
+                            content.Add(item.GetApiName(), res);
+                        else
+                            LogHelper.Logger.Error($"Отсутствует параметр {item.Name}");
+                    }
                 }
             }
 
@@ -367,8 +402,8 @@
             foreach (Parameter param in p)
             {
                 string pName = param.Name.ToLower();
-                /*if (!UpdateParameters(param, parameters))
-                    continue;*/
+                if (!UpdateParameters(param, parameters))
+                    continue;
 
                 if (!parameters.ContainsKey(pName))
                 {
@@ -404,8 +439,8 @@
             foreach (Parameter param in p)
             {
                 string pName = param.Name.ToLower();
-                /*if (!UpdateParameters(param, parameters))
-                    continue;*/
+                if (!UpdateParameters(param, parameters))
+                    continue;
 
                 if (!parameters.ContainsKey(pName))
                 {
@@ -445,24 +480,20 @@
                 { "password", () => account.Password }
             };
 
-            string pattern = @"\[(?<p1>.*?(?<p2>{(?<p3>(?<={).+?(?=}))}).*?)\]|{(?<m>(?<={).+?(?=}))}";
+            string pattern = @"\[(?<p1>.*?(?<p2>{(?<m>(?<={).+?(?=}))}).*?)\]|{(?<m>(?<={).+?(?=}))}";
             string text = Regex.Replace(inputText, pattern,
                 (m) =>
                 {
                     string name = m.Groups["m"].Value.ToLower();
                     if (macro.ContainsKey(name))
                     {
-                        return macro[name]().ToString();
-                    }
-
-                    name = m.Groups["p3"].Value.ToLower();
-                    if (macro.ContainsKey(name))
-                    {
                         string res = macro[name]().ToString();
-                        if (string.IsNullOrEmpty(res))
-                            return res;
+                        if (!(string.IsNullOrEmpty(m.Groups["p1"].Value) || string.IsNullOrEmpty(res)))
+                        {
+                            res = m.Groups["p1"].Value.Replace(m.Groups["p2"].Value, res);
+                        }
 
-                        return m.Groups["p1"].Value.Replace(m.Groups["p2"].Value, res);
+                        return res;
                     }
 
                     throw new Exception("Макрос {" + name + "} не найден");
@@ -471,7 +502,6 @@
             return text;
         }
 
-        /*
         bool UpdateParameters(Parameter param, StringDictionary parameters)
         {
             string pName = param.Name.ToLower();
@@ -482,7 +512,7 @@
 
                 try
                 {
-                    object obj = GetPropertyFromMethod(param.Recive.Method, param.Recive.Parameter, parameters);
+                    object obj = ExecuteMethod(param.Recive.Method, param.Recive.Parameter, parameters);
                     parameters.Add(pName, obj.ToString());
                     return true;
                 }
@@ -493,6 +523,6 @@
             }
 
             return true;
-        }*/
+        }
     }
 }

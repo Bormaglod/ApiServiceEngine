@@ -14,7 +14,7 @@
     [DataContract]
     class SerializedObject
     {
-        public SerializedObject(ServiceAPI api, Service service, Method method, StringDictionary parameters)
+        /*public SerializedObject(ServiceAPI api, Service service, Method method, StringDictionary parameters)
         {
             Type type = GetType();
             foreach (Parameter p in method.In)
@@ -154,6 +154,6 @@
             }
 
             return json;
-        }
+        }*/
     }
 }
