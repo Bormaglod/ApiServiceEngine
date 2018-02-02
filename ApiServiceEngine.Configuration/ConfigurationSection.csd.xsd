@@ -293,11 +293,6 @@
 				<xs:documentation>Описание сервиса</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="type" use="required" type="xs:string">
-			<xs:annotation>
-				<xs:documentation>Имя класса содержащего методы сервиса</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="ApiServiceEngine.Configuration.ServicesCT">
 		<xs:choice minOccurs="0" maxOccurs="unbounded">

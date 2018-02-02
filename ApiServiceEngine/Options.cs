@@ -19,27 +19,24 @@
         [Option('a', "account", HelpText = "Имя набора регистрационных данных указанных в секции /configuration/api/services/service/settings/accounts/")]
         public string Account { get; set; }
 
-        public StringDictionary ParamDictionary
+        public StringDictionary GetParamDictionary()
         {
-            get
+            StringDictionary parameters = new StringDictionary();
+
+            //список входных параметров
+            foreach (string item in Parameters.Where(x => !string.IsNullOrEmpty(x)))
             {
-                StringDictionary parameters = new StringDictionary();
-
-                //список входных параметров
-                foreach (string item in Parameters.Where(x => !string.IsNullOrEmpty(x)))
+                string[] p = item.Split('=');
+                if (p.Length != 2)
                 {
-                    string[] p = item.Split('=');
-                    if (p.Length != 2)
-                    {
-                        LogHelper.Logger.Error($"Параметр {item} имеет неверный формат.");
-                        return null;
-                    }
-
-                    parameters.Add(p[0].ToLower(), p[1].Trim());
+                    LogHelper.Logger.Error($"Параметр {item} имеет неверный формат.");
+                    return null;
                 }
 
-                return parameters;
+                parameters.Add(p[0].ToLower(), p[1].Trim());
             }
+
+            return parameters;
         }
     }
 }

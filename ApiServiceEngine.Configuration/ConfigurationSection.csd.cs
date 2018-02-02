@@ -1905,32 +1905,6 @@ namespace ApiServiceEngine.Configuration
         }
         #endregion
         
-        #region Type Property
-        /// <summary>
-        /// The XML name of the <see cref="Type"/> property.
-        /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
-        internal const string TypePropertyName = "type";
-        
-        /// <summary>
-        /// Gets or sets имя класса содержащего методы сервиса
-        /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ConfigurationSectionDesigner.CsdFileGenerator", "2.0.3.2")]
-        [global::System.ComponentModel.DescriptionAttribute("Имя класса содержащего методы сервиса")]
-        [global::System.Configuration.ConfigurationPropertyAttribute(global::ApiServiceEngine.Configuration.Service.TypePropertyName, IsRequired=true, IsKey=false, IsDefaultCollection=false)]
-        public virtual string Type
-        {
-            get
-            {
-                return ((string)(base[global::ApiServiceEngine.Configuration.Service.TypePropertyName]));
-            }
-            set
-            {
-                base[global::ApiServiceEngine.Configuration.Service.TypePropertyName] = value;
-            }
-        }
-        #endregion
-        
         #region Settings Property
         /// <summary>
         /// The XML name of the <see cref="Settings"/> property.

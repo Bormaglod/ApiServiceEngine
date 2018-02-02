@@ -239,11 +239,6 @@
             <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
           </type>
         </attributeProperty>
-        <attributeProperty name="Type" isRequired="true" isKey="false" isDefaultCollection="false" xmlName="type" isReadOnly="false" documentation="Имя класса содержащего методы сервиса">
-          <type>
-            <externalTypeMoniker name="/d0ed9acb-0435-4532-afdd-b5115bc4d562/String" />
-          </type>
-        </attributeProperty>
       </attributeProperties>
       <elementProperties>
         <elementProperty name="Settings" isRequired="false" isKey="false" isDefaultCollection="false" xmlName="settings" isReadOnly="false" documentation="Основные настройки сервиса">
